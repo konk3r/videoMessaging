@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
-package com.example.android.actionbarcompat;
+package com.warmice.android.videomessaging.ui;
 
 import java.io.File;
+
+import com.warmice.android.videomessaging.R;
+import com.warmice.android.videomessaging.ui.actionbar.ActionBarActivity;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -49,7 +52,7 @@ public class MainActivity extends ActionBarActivity {
 			getActionBar().setHomeButtonEnabled(true);
 		}
 
-		setContentView(R.layout.main);
+		setContentView(R.layout.activity_show_video);
 		storeViews();
 		setupVideoView();
 	}

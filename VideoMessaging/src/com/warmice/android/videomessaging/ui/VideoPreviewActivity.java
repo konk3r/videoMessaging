@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
-package com.example.android.actionbarcompat;
+package com.warmice.android.videomessaging.ui;
 
 import java.io.IOException;
 import java.util.List;
+
+import com.warmice.android.videomessaging.R;
+import com.warmice.android.videomessaging.ui.actionbar.ActionBarActivity;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -45,10 +48,6 @@ public class VideoPreviewActivity extends ActionBarActivity {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Hide the window title.
-//        requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         // Create a RelativeLayout container that will hold a SurfaceView,
         // and set it as the content of our activity.
@@ -153,7 +152,8 @@ public class VideoPreviewActivity extends ActionBarActivity {
         List<Size> mSupportedPreviewSizes;
         Camera mCamera;
 
-        Preview(Context context) {
+        @SuppressWarnings("deprecation")
+		Preview(Context context) {
             super(context);
 
             mSurfaceView = new SurfaceView(context);

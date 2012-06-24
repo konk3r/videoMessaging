@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package com.example.android.actionbarcompat;
+package com.warmice.android.videomessaging.ui.actionbar;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+
+import com.warmice.android.videomessaging.R;
 
 import android.app.Activity;
 import android.content.Context;
@@ -81,7 +83,8 @@ public class ActionBarHelperBase extends ActionBarHelper {
     /**
      * Sets up the compatibility action bar with the given title.
      */
-    private void setupActionBar() {
+    @SuppressWarnings("deprecation")
+	private void setupActionBar() {
         final ViewGroup actionBarCompat = getActionBarCompat();
         if (actionBarCompat == null) {
             return;
@@ -163,9 +166,10 @@ public class ActionBarHelperBase extends ActionBarHelper {
      * Adds an action button to the compatibility action bar, using menu information from a {@link
      * android.view.MenuItem}. If the menu item ID is <code>menu_refresh</code>, the menu item's
      * state can be changed to show a loading spinner using
-     * {@link com.example.android.actionbarcompat.ActionBarHelperBase#setRefreshActionItemState(boolean)}.
+     * {@link com.warmice.android.videomessaging.ui.actionbar.ActionBarHelperBase#setRefreshActionItemState(boolean)}.
      */
-    private View addActionItemCompatFromMenuItem(final MenuItem item) {
+    @SuppressWarnings("deprecation")
+	private View addActionItemCompatFromMenuItem(final MenuItem item) {
         final int itemId = item.getItemId();
 
         final ViewGroup actionBar = getActionBarCompat();

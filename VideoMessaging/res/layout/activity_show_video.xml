@@ -14,17 +14,12 @@
   limitations under the License.
   -->
 
-<resources>
-    <string name="app_name">Gabe\'s video test</string>
-    <string name="alternate_title">An alternate title that is long</string>
-    <string name="toggle_title">Toggle title</string>
-    <string name="record_video">Record Video</string>
-
-    <string name="menu_refresh">Refresh</string>
-    <string name="menu_search">Search</string>
-    <string name="menu_share">Share</string>
-    <string name="menu_new_message">New Message</string>
-    
-    <string name="camera_alert">Device has only one camera!</string>
-    <string name="switch_cam">Switch Camera</string>
-</resources>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:background="#ff000000">
+    <VideoView android:id="@+id/video_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</RelativeLayout>

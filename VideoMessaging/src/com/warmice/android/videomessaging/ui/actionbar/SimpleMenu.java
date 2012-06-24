@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.actionbarcompat;
+package com.warmice.android.videomessaging.ui.actionbar;
 
 import android.content.ComponentName;
 import android.content.Context;

@@ -1,4 +1,4 @@
-package com.example.android.actionbarcompat;
+package com.warmice.android.videomessaging;
 
 import org.acra.ACRA;
 import org.acra.annotation.ReportsCrashes;
