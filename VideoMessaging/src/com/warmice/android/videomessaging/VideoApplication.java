@@ -7,6 +7,9 @@ import android.app.Application;
 
 @ReportsCrashes(formKey = "dDB6WUxFamJvQVR6WlIzQ3FoLUZpa1E6MQ") 
 public class VideoApplication extends Application {
+	
+	public static final boolean IS_DEBUGGABLE = true;
+	
     @Override
     public void onCreate() {
         // The following line triggers the initialization of ACRA

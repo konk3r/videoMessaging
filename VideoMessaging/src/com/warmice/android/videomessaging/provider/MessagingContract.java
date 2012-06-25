@@ -20,7 +20,7 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
- * Contract class for interacting with {@link ScheduleProvider}. Unless
+ * Contract class for interacting with {@link MessagingProvider}. Unless
  * otherwise noted, all time-based fields are milliseconds since epoch and can
  * be compared against {@link System#currentTimeMillis()}.
  * <p>
@@ -28,7 +28,7 @@ import android.provider.BaseColumns;
  * using stronger {@link String} identifiers, instead of {@code int}
  * {@link BaseColumns#_ID} values, which are prone to shuffle during sync.
  */
-public class ScheduleContract {
+public class MessagingContract {
 
     /**
      * Special value for {@link SyncColumns#UPDATED} indicating that an entry
@@ -47,7 +47,7 @@ public class ScheduleContract {
         String UPDATED = "updated";
     }
 
-    interface VideoColumns {
+    public interface VideoColumns {
         String VIDEO_FILE_PATH = "video_file_path";
         String VIDEO_DATE = "video_date";
         String VIDEO_NOTE = "video_note";
@@ -55,13 +55,13 @@ public class ScheduleContract {
         String USER_ID = "fk_user";
     }
 
-    interface UserColumns {
+    public interface UserColumns {
         String USER_ID = "user_id";
         String USER_NAME = "user_name";
         String USER_LAST_POST_DATE = "user_last_post_date";
     }
 
-    public static final String CONTENT_AUTHORITY = "com.example.android.actionbarcompat";
+    public static final String CONTENT_AUTHORITY = "com.warmice.android.videomessaging";
 
     private static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
@@ -118,8 +118,8 @@ public class ScheduleContract {
         public static final String ALL_TRACK_ID = "all";
 
         /** Build {@link Uri} for requested {@link #TRACK_ID}. */
-        public static Uri buildUserUri(String trackId) {
-            return CONTENT_URI.buildUpon().appendPath(trackId).build();
+        public static Uri buildUserUri(String userId) {
+            return CONTENT_URI.buildUpon().appendPath(userId).build();
         }
 
         /**

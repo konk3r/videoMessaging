@@ -33,15 +33,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import com.warmice.android.videomessaging.provider.MessagingDatabase.Tables;
-import com.warmice.android.videomessaging.provider.ScheduleContract.Users;
-import com.warmice.android.videomessaging.provider.ScheduleContract.Videos;
+import com.warmice.android.videomessaging.provider.MessagingContract.Users;
+import com.warmice.android.videomessaging.provider.MessagingContract.Videos;
 import com.warmice.android.videomessaging.util.SelectionBuilder;
 
 /**
- * Provider that stores {@link ScheduleContract} data. Data is usually inserted
+ * Provider that stores {@link MessagingContract} data. Data is usually inserted
  * by {@link SyncService}, and queried by various {@link Activity} instances.
  */
-public class ScheduleProvider extends ContentProvider {
+public class MessagingProvider extends ContentProvider {
     private static final String TAG = "ScheduleProvider";
     private static final boolean LOGV = Log.isLoggable(TAG, Log.VERBOSE);
 
@@ -62,7 +62,7 @@ public class ScheduleProvider extends ContentProvider {
      */
     private static UriMatcher buildUriMatcher() {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
-        final String authority = ScheduleContract.CONTENT_AUTHORITY;
+        final String authority = MessagingContract.CONTENT_AUTHORITY;
 
         matcher.addURI(authority, "videos", VIDEOS);
         matcher.addURI(authority, "videos/*", VIDEO_ID);

@@ -16,20 +16,47 @@
 
 package com.warmice.android.videomessaging.ui;
 
-import com.warmice.android.videomessaging.R;
-import com.warmice.android.videomessaging.ui.actionbar.ActionBarActivity;
+import org.apache.http.message.BasicNameValuePair;
 
+import com.warmice.android.videomessaging.R;
+import com.warmice.android.videomessaging.VideoApplication;
+import com.warmice.android.videomessaging.provider.MessagingContract.UserColumns;
+import com.warmice.android.videomessaging.provider.MessagingContract.Users;
+import com.warmice.android.videomessaging.ui.actionbar.ActionBarActivity;
+import com.warmice.android.videomessaging.ui.adapter.MessageListAdapter;
+
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ListView;
 
 public class MessageListActivity extends ActionBarActivity {
-
+	private static final String TAG = "MessagingListActivity";
+	private ListView mList;
+	private Cursor mCursor;
+	private MessageListAdapter mAdapter;
+	
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
+        setContentView(R.layout.activity_message_list);
+        
+        refreshCursor();
+        initializeList();
     }
+
+	private void initializeList() {
+		mList = (ListView) findViewById(R.id.message_list);
+		mAdapter = new MessageListAdapter(this, mCursor);
+		
+		mList.setAdapter(mAdapter);
+	}
 
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -47,10 +74,37 @@ public class MessageListActivity extends ActionBarActivity {
         // Handle item selection
         switch (item.getItemId()) {
         case R.id.menu_new_message:
+        	addNewMessage();
+        	refreshCursor();
+        	updateListAdapter();
             return true;
         default:
             return super.onOptionsItemSelected(item);
         }
     }
+
+	private void updateListAdapter() {
+		mAdapter.changeCursor(mCursor);
+//		mAdapter.notifyDataSetChanged();
+	}
+
+	private void refreshCursor() {
+		final ContentResolver resolver = getContentResolver();
+		final Uri uri = Users.CONTENT_URI;
+		mCursor = resolver.query(uri, null, null, null, null);
+	}
+
+	private void addNewMessage() {
+		ContentResolver resolver = getContentResolver();
+		Uri uri = Users.CONTENT_URI;
+		ContentValues values = new ContentValues();
+		values.put(UserColumns.USER_ID, "other sharon");
+		values.put(UserColumns.USER_NAME, "Poli Love");
+		
+		Uri userUri = resolver.insert(uri, values);
+		
+		if (VideoApplication.IS_DEBUGGABLE) Log.d(TAG, userUri.toString());
+		
+	}
     
 }

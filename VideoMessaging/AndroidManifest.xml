@@ -29,12 +29,13 @@
         android:icon="@drawable/ic_launcher"
         android:theme="@style/AppTheme"
         android:name="VideoApplication">
-        <activity android:name=".ui.MainActivity" android:label="@string/app_name">
+        <activity android:name=".ui.VideoActivity" android:label="@string/app_name">
         </activity>
         <activity android:name=".ui.MessageListActivity" android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter></activity>
+        <provider android:name=".provider.MessagingProvider" android:authorities="com.warmice.android.videomessaging"></provider>
     </application>
 </manifest>

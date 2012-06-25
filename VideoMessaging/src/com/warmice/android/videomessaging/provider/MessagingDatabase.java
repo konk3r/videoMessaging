@@ -16,8 +16,8 @@
 
 package com.warmice.android.videomessaging.provider;
 
-import com.warmice.android.videomessaging.provider.ScheduleContract.UserColumns;
-import com.warmice.android.videomessaging.provider.ScheduleContract.VideoColumns;
+import com.warmice.android.videomessaging.provider.MessagingContract.UserColumns;
+import com.warmice.android.videomessaging.provider.MessagingContract.VideoColumns;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -27,7 +27,7 @@ import android.util.Log;
 
 /**
  * Helper for managing {@link SQLiteDatabase} that stores data for
- * {@link ScheduleProvider}.
+ * {@link MessagingProvider}.
  */
 public class MessagingDatabase extends SQLiteOpenHelper {
     private static final String TAG = "MessagingDatabase";
@@ -37,7 +37,7 @@ public class MessagingDatabase extends SQLiteOpenHelper {
     // NOTE: carefully update onUpgrade() when bumping database versions to make
     // sure user data is saved.
 
-    private static final int VERSION = 0;
+    private static final int VERSION = 1;
 
     private static final int DATABASE_VERSION = VERSION;
 
@@ -64,6 +64,7 @@ public class MessagingDatabase extends SQLiteOpenHelper {
                 + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + UserColumns.USER_ID + " TEXT NOT NULL,"
                 + UserColumns.USER_NAME + " TEXT NOT NULL,"
+                + UserColumns.USER_LAST_POST_DATE + " DATE,"
                 + "UNIQUE (" + UserColumns.USER_ID + ") ON CONFLICT REPLACE)");
     }
 

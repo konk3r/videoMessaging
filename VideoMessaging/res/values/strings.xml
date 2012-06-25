@@ -27,4 +27,8 @@
     
     <string name="camera_alert">Device has only one camera!</string>
     <string name="switch_cam">Switch Camera</string>
+    
+    <string name="contact_image">Contact Image</string>
+    <string name="contact_name">Sharon Amor</string>
+    <string name="last_message_date">06/24/2012</string>
 </resources>

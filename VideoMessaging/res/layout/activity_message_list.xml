@@ -17,9 +17,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:background="#ff000000">
-    <VideoView android:id="@+id/video_view"
+    android:gravity="center">
+    <ListView android:id="@+id/message_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </RelativeLayout>

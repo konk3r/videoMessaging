@@ -33,7 +33,7 @@ import android.view.MenuItem;
 import android.widget.MediaController;
 import android.widget.VideoView;
 
-public class MainActivity extends ActionBarActivity {
+public class VideoActivity extends ActionBarActivity {
 	final static int ACTION_TAKE_VIDEO = 1;
 	final static String EXTRA_URI = "extra_uri";
 	final static String EXTRA_POSITION = "extra_position";
