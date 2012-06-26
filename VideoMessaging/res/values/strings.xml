@@ -26,9 +26,12 @@
     <string name="menu_new_message">New Message</string>
     
     <string name="camera_alert">Device has only one camera!</string>
-    <string name="switch_cam">Switch Camera</string>
+    <string name="record">Record New Message</string>
     
     <string name="contact_image">Contact Image</string>
     <string name="contact_name">Sharon Amor</string>
+    
+    <string name="video_thumbnail">Video Thumbnail</string>
     <string name="last_message_date">06/24/2012</string>
+    <string name="message_note">\.\.\.</string>
 </resources>

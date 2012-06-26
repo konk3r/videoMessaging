@@ -16,17 +16,19 @@
 
 package com.warmice.android.videomessaging.ui;
 
-import org.apache.http.message.BasicNameValuePair;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import com.warmice.android.videomessaging.R;
 import com.warmice.android.videomessaging.VideoApplication;
 import com.warmice.android.videomessaging.provider.MessagingContract.UserColumns;
 import com.warmice.android.videomessaging.provider.MessagingContract.Users;
 import com.warmice.android.videomessaging.ui.actionbar.ActionBarActivity;
-import com.warmice.android.videomessaging.ui.adapter.MessageListAdapter;
+import com.warmice.android.videomessaging.ui.adapter.ConversationListAdapter;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -34,18 +36,21 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-public class MessageListActivity extends ActionBarActivity {
+public class ConversationsActivity extends ActionBarActivity implements OnItemClickListener {
 	private static final String TAG = "MessagingListActivity";
 	private ListView mList;
 	private Cursor mCursor;
-	private MessageListAdapter mAdapter;
+	private ConversationListAdapter mAdapter;
 	
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        setContentView(R.layout.activity_message_list);
+        setContentView(R.layout.activity_conversations);
         
         refreshCursor();
         initializeList();
@@ -53,19 +58,17 @@ public class MessageListActivity extends ActionBarActivity {
 
 	private void initializeList() {
 		mList = (ListView) findViewById(R.id.message_list);
-		mAdapter = new MessageListAdapter(this, mCursor);
+		mAdapter = new ConversationListAdapter(this, mCursor);
 		
 		mList.setAdapter(mAdapter);
+		mList.setOnItemClickListener(this);
 	}
 
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.message_list, menu);
-        
-        // Calling super after populating the menu is necessary here to ensure that the
-        // action bar helpers have a chance to handle this event.
+        inflater.inflate(R.menu.conversations, menu);
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -85,7 +88,6 @@ public class MessageListActivity extends ActionBarActivity {
 
 	private void updateListAdapter() {
 		mAdapter.changeCursor(mCursor);
-//		mAdapter.notifyDataSetChanged();
 	}
 
 	private void refreshCursor() {
@@ -95,16 +97,35 @@ public class MessageListActivity extends ActionBarActivity {
 	}
 
 	private void addNewMessage() {
-		ContentResolver resolver = getContentResolver();
-		Uri uri = Users.CONTENT_URI;
-		ContentValues values = new ContentValues();
-		values.put(UserColumns.USER_ID, "other sharon");
-		values.put(UserColumns.USER_NAME, "Poli Love");
+		final ContentResolver resolver = getContentResolver();
+		final Uri uri = Users.CONTENT_URI;
+		final ContentValues values = new ContentValues();
+		values.put(UserColumns.USER_ID, "g-money");
+		values.put(UserColumns.USER_NAME, "La Boa");
+		values.put(UserColumns.USER_LAST_POST_DATE, createCurrentDate());
 		
-		Uri userUri = resolver.insert(uri, values);
+		final Uri userUri = resolver.insert(uri, values);
 		
 		if (VideoApplication.IS_DEBUGGABLE) Log.d(TAG, userUri.toString());
-		
+	}
+
+	private String createCurrentDate() {
+		final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
+		final Date date = new Date();
+		final String formattedDate = dateFormat.format(date);
+		return formattedDate;
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+		Uri uri = mAdapter.getUserUri(position);
+		startVideoActivity(uri);
+	}
+
+	private void startVideoActivity(Uri uri) {
+		Intent intent = new Intent(this, MessagesActivity.class);
+		intent.putExtra(MessagesActivity.EXTRA_USER_URI, uri);
+		startActivity(intent);
 	}
     
 }

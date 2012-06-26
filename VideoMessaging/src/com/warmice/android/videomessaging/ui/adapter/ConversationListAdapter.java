@@ -3,7 +3,6 @@ package com.warmice.android.videomessaging.ui.adapter;
 import com.warmice.android.videomessaging.R;
 import com.warmice.android.videomessaging.provider.MessagingContract.UserColumns;
 import com.warmice.android.videomessaging.provider.MessagingContract.Users;
-import com.warmice.android.videomessaging.provider.MessagingContract.VideoColumns;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -15,58 +14,58 @@ import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class MessageListAdapter extends CursorAdapter {
+public class ConversationListAdapter extends CursorAdapter {
 	private LayoutInflater mInflater;
-	private final int mNoteIndex;
+	private final int mNameIndex;
+	private final int mIdIndex;
 	private final int mDateIndex;
-	private final int mUriIndex;
 
 	@SuppressWarnings("deprecation")
-	public MessageListAdapter(Context context, Cursor c) {
+	public ConversationListAdapter(Context context, Cursor c) {
 		super(context, c);
 		mInflater = LayoutInflater.from(context);
 		
-		mNoteIndex = c.getColumnIndex(VideoColumns.VIDEO_NOTE);
-		mDateIndex = c.getColumnIndex(VideoColumns.VIDEO_DATE);
-		mUriIndex = c.getColumnIndex(VideoColumns.VIDEO_FILE_PATH);
+		mNameIndex = c.getColumnIndex(UserColumns.USER_NAME);
+		mIdIndex = c.getColumnIndex(UserColumns.USER_ID);
+		mDateIndex = c.getColumnIndex(UserColumns.USER_LAST_POST_DATE);
 	}
 
 	@Override
 	public void bindView(View view, Context context, Cursor cursor) {
 		final ViewHolder holder = (ViewHolder) view.getTag();
-		final String name = cursor.getString(mNoteIndex);
+		final String name = cursor.getString(mNameIndex);
 		final String date = cursor.getString(mDateIndex);
 		
-		holder.note.setText(name);
+		holder.name.setText(name);
 		holder.date.setText(date);
 	}
 
 	@Override
 	public View newView(Context context, Cursor cursor, ViewGroup parent) {
-		View view = mInflater.inflate(R.layout.list_messages_outbound, parent, false);
+		View view = mInflater.inflate(R.layout.list_conversations, parent, false);
 		ViewHolder holder = new ViewHolder();
 		view.setTag(holder);
 		
-		holder.note = (TextView) view.findViewById(R.id.message_note);
-		holder.date = (TextView) view.findViewById(R.id.message_date);
-		holder.thumbnail = (ImageView) view.findViewById(R.id.message_thumbnail);
+		holder.name = (TextView) view.findViewById(R.id.contact_name);
+		holder.date = (TextView) view.findViewById(R.id.last_message_date);
+		holder.image = (ImageView) view.findViewById(R.id.contact_image);
 		
 		return view;
 	}
 	
 	private class ViewHolder{
-		TextView note;
+		TextView name;
 		TextView date;
 		@SuppressWarnings("unused")
-		ImageView thumbnail;
+		ImageView image;
 	}
 
-	public Uri getVideoUri(int position) {
+	public Uri getUserUri(int position) {
 		final Cursor c = getCursor();
 		c.moveToPosition(position);
-		final String videoUri = c.getString(mUriIndex);
+		final String userId = c.getString(mIdIndex);
 		
-		return Uri.parse(videoUri);
+		return Users.buildUserUri(userId);
 	}
 
 }

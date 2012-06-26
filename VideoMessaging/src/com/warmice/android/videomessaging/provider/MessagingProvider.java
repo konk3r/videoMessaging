@@ -227,6 +227,11 @@ public class MessagingProvider extends ContentProvider {
                 return builder.table(Tables.USERS)
                         .where(Users.USER_ID + "=?", userId);
             }
+            case USER_ID_VIDEOS: {
+                final String userId = Users.getUserId(uri);
+                return builder.table(Tables.VIDEOS)
+                        .where(Videos.USER_ID + "=?", userId);
+            }
             default: {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
             }
