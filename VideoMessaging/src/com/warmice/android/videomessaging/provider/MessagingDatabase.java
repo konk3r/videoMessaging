@@ -37,7 +37,7 @@ public class MessagingDatabase extends SQLiteOpenHelper {
     // NOTE: carefully update onUpgrade() when bumping database versions to make
     // sure user data is saved.
 
-    private static final int VERSION = 1;
+    private static final int VERSION = 2;
 
     private static final int DATABASE_VERSION = VERSION;
 
@@ -56,9 +56,10 @@ public class MessagingDatabase extends SQLiteOpenHelper {
                 + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + VideoColumns.VIDEO_DATE + " DATE NOT NULL,"
                 + VideoColumns.VIDEO_NOTE + " TEXT,"
-                + VideoColumns.VIDEO_FILE_PATH + " TEXT NOT NULL,"
+                + VideoColumns.VIDEO_URI + " TEXT NOT NULL,"
+                + VideoColumns.THUMBNAIL_FILE_PATH + " TEXT NOT NULL,"
                 + VideoColumns.USER_ID + " TEXT NOT NULL,"
-                + "UNIQUE (" + VideoColumns.VIDEO_FILE_PATH + ") ON CONFLICT REPLACE)");
+                + "UNIQUE (" + VideoColumns.VIDEO_URI + ") ON CONFLICT REPLACE)");
 
         db.execSQL("CREATE TABLE " + Tables.USERS + " ("
                 + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"

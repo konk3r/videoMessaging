@@ -144,7 +144,7 @@ public class MessagingProvider extends ContentProvider {
             case VIDEOS: {
                 db.insertOrThrow(Tables.VIDEOS, null, values);
                 getContext().getContentResolver().notifyChange(uri, null);
-                return Videos.buildVideoUri(values.getAsString(Videos.VIDEO_FILE_PATH));
+                return Videos.buildVideoUri(values.getAsString(Videos.VIDEO_URI));
             }
             case USERS: {
                 db.insertOrThrow(Tables.USERS, null, values);
@@ -217,7 +217,7 @@ public class MessagingProvider extends ContentProvider {
             case VIDEO_ID: {
                 final String videoId = Videos.getVideoId(uri);
                 return builder.table(Tables.VIDEOS)
-                        .where(Videos.VIDEO_FILE_PATH + "=?", videoId);
+                        .where(Videos.VIDEO_URI + "=?", videoId);
             }
             case USERS: {
                 return builder.table(Tables.USERS);
@@ -252,7 +252,7 @@ public class MessagingProvider extends ContentProvider {
             case VIDEO_ID: {
                 final String videoId = Videos.getVideoId(uri);
                 return builder.table(Tables.VIDEOS)
-                        .where(Videos.VIDEO_FILE_PATH + "=?", videoId);
+                        .where(Videos.VIDEO_URI + "=?", videoId);
             }
             case USERS: {
                 return builder.table(Tables.USERS);

@@ -48,7 +48,8 @@ public class MessagingContract {
     }
 
     public interface VideoColumns {
-        String VIDEO_FILE_PATH = "video_file_path";
+        String VIDEO_URI = "video_file_path";
+        String THUMBNAIL_FILE_PATH = "video_thumbnail";
         String VIDEO_DATE = "video_date";
         String VIDEO_NOTE = "video_note";
         

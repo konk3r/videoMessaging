@@ -23,10 +23,11 @@
     <string name="menu_refresh">Refresh</string>
     <string name="menu_search">Search</string>
     <string name="menu_share">Share</string>
-    <string name="menu_new_message">New Message</string>
+    <string name="menu_new_conversation">New Conversation</string>
+    
+    <string name="menu_record">Record New Message</string>
     
     <string name="camera_alert">Device has only one camera!</string>
-    <string name="record">Record New Message</string>
     
     <string name="contact_image">Contact Image</string>
     <string name="contact_name">Sharon Amor</string>

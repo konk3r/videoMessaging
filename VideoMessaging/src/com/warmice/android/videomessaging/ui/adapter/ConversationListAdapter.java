@@ -3,8 +3,10 @@ package com.warmice.android.videomessaging.ui.adapter;
 import com.warmice.android.videomessaging.R;
 import com.warmice.android.videomessaging.provider.MessagingContract.UserColumns;
 import com.warmice.android.videomessaging.provider.MessagingContract.Users;
+import com.warmice.android.videomessaging.ui.MessagesActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -60,12 +62,17 @@ public class ConversationListAdapter extends CursorAdapter {
 		ImageView image;
 	}
 
-	public Uri getUserUri(int position) {
+	public Intent setupMessagesIntent(Intent intent, int position) {
 		final Cursor c = getCursor();
 		c.moveToPosition(position);
-		final String userId = c.getString(mIdIndex);
 		
-		return Users.buildUserUri(userId);
+		final String userId = c.getString(mIdIndex);
+		final String userName = c.getString(mNameIndex);
+		
+		intent.putExtra(MessagesActivity.EXTRA_USER_ID, userId);
+		intent.putExtra(MessagesActivity.EXTRA_USER_NAME, userName);
+		
+		return intent;
 	}
 
 }

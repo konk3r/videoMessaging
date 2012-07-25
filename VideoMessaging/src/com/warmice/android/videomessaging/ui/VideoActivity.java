@@ -27,12 +27,15 @@ import android.widget.MediaController;
 import android.widget.VideoView;
 
 public class VideoActivity extends ActionBarActivity {
-	final static int ACTION_TAKE_VIDEO = 1;
-	final static String EXTRA_VIDEO_URI = "extra_video_uri";
-	final static String EXTRA_POSITION = "extra_position";
+	public final static int ACTION_TAKE_VIDEO = 1;
+	
+	public final static String EXTRA_VIDEO_URI = "extra_video_uri";
+	public final static String EXTRA_DATE = "extra_video_date";
+	public final static String EXTRA_POSITION = "extra_position";
 
 	private VideoView mVideoView;
 	private Uri mVideoUri;
+	private String mDate;
 	private int mVideoPosition;
 
 	public void onCreate(Bundle savedInstanceState) {
@@ -41,22 +44,24 @@ public class VideoActivity extends ActionBarActivity {
 		if (savedInstanceState != null) {
 			restoreInstanceState(savedInstanceState);
 		} else {
-			pullVideoUriFromBundle();
+			extractDataFromExtras();
 		}
 
 		if (hasNativeActionBar()) {
 			getActionBar().setHomeButtonEnabled(true);
 		}
+		setTitle(mDate);
 		setContentView(R.layout.activity_show_video);
 		storeViews();
 		setupVideoView();
 	}
 
-	private void pullVideoUriFromBundle() {
+	private void extractDataFromExtras() {
 		final Intent intent = getIntent();
 		final Bundle extras = intent.getExtras();
 		
 		mVideoUri = (Uri) extras.get(EXTRA_VIDEO_URI);
+		mDate = (String) extras.get(EXTRA_DATE);
 	}
 
 	@Override
@@ -77,6 +82,7 @@ public class VideoActivity extends ActionBarActivity {
 
 	private void restoreVideoProgress() {
 		mVideoView.seekTo(mVideoPosition);
+		mVideoView.resume();
 	}
 
 	private boolean hasNativeActionBar() {
@@ -93,6 +99,7 @@ public class VideoActivity extends ActionBarActivity {
 	private void restoreInstanceState(Bundle savedInstanceState) {
 		mVideoUri = (Uri) savedInstanceState.getParcelable(EXTRA_VIDEO_URI);
 		mVideoPosition = savedInstanceState.getInt(EXTRA_POSITION);
+		mDate = savedInstanceState.getString(EXTRA_DATE);
 	}
 
 	private void storeViews() {
@@ -116,6 +123,7 @@ public class VideoActivity extends ActionBarActivity {
 		super.onSaveInstanceState(outState);
 		outState.putParcelable(EXTRA_VIDEO_URI, mVideoUri);
 		outState.putInt(EXTRA_POSITION, mVideoPosition);
+		outState.putString(EXTRA_DATE, mDate);
 	}
 
 }

@@ -17,26 +17,19 @@
 package com.warmice.android.videomessaging.ui;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import com.warmice.android.videomessaging.R;
-import com.warmice.android.videomessaging.VideoApplication;
 import com.warmice.android.videomessaging.provider.MessagingContract.Users;
-import com.warmice.android.videomessaging.provider.MessagingContract.VideoColumns;
-import com.warmice.android.videomessaging.provider.MessagingContract.Videos;
+import com.warmice.android.videomessaging.tools.Video;
 import com.warmice.android.videomessaging.ui.actionbar.ActionBarActivity;
 import com.warmice.android.videomessaging.ui.adapter.MessageListAdapter;
 
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -46,31 +39,38 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 public class MessagesActivity extends ActionBarActivity implements OnItemClickListener {
+	@SuppressWarnings("unused")
 	private static final String TAG = "MessagingListActivity";
 
-	public final static String EXTRA_USER_URI = "extra_video_uri";
+	public final static String EXTRA_USER_ID = "extra_user_id";
+	public final static String EXTRA_USER_NAME = "extra_user_name";
 	private final static int REQUEST_RECORD_VIDEO = 0;
 	
 	private ListView mList;
 	private Cursor mCursor;
 	private MessageListAdapter mAdapter;
 	
-	private Uri mUserUri;
+	private String mUserId;
+	private String mUserName;
 	
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messages);
 
-        pullUserUri();
+        extractContentFromBundle();
+        
+        setTitle(mUserName);
+        
         refreshCursor();
     	initializeList();
     }
 
-	private void pullUserUri() {
+	private void extractContentFromBundle() {
         final Intent intent = getIntent();
         final Bundle extras = intent.getExtras();
         
-        mUserUri = (Uri) extras.get(EXTRA_USER_URI);
+        mUserId = (String) extras.get(EXTRA_USER_ID);
+        mUserName = (String) extras.get(EXTRA_USER_NAME);
 		
 	}
 
@@ -102,8 +102,7 @@ public class MessagesActivity extends ActionBarActivity implements OnItemClickLi
     }
 
 	private void refreshCursor() {
-		final String userId = Users.getUserId(mUserUri);
-		final Uri videoUri = Users.buildVideosUri(userId);
+		final Uri videoUri = Users.buildVideosUri(mUserId);
 		final ContentResolver resolver = getContentResolver();
 		
 		mCursor = resolver.query(videoUri, null, null, null, null);
@@ -116,13 +115,12 @@ public class MessagesActivity extends ActionBarActivity implements OnItemClickLi
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		Uri videoUri = mAdapter.getVideoUri(position);
-		startVideoActivity(videoUri);
+		startVideoActivity(position);
 	}
 
-	private void startVideoActivity(Uri videoUri) {
+	private void startVideoActivity(int messagePosition) {
 		Intent intent = new Intent(this, VideoActivity.class);
-		intent.putExtra(VideoActivity.EXTRA_VIDEO_URI, videoUri);
+		intent = mAdapter.setupStartVideoIntent(intent, messagePosition);
 		startActivity(intent);
 	}
 
@@ -160,32 +158,13 @@ public class MessagesActivity extends ActionBarActivity implements OnItemClickLi
 		}
 	}
 
-	private String createCurrentDate() {
-		final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
-		final Date date = new Date();
-		final String formattedDate = dateFormat.format(date);
-		return formattedDate;
-	}
-
 	private void storeUri(Intent intent) {
 		final Uri returnedUri = intent.getData();
 		if (returnedUri != null) {
-			final ContentResolver resolver = getContentResolver();
-			final ContentValues values = createOutboundVideoValues(returnedUri);
-			final Uri userUri = resolver.insert(Videos.CONTENT_URI, values);
-			
-			if (VideoApplication.IS_DEBUGGABLE) Log.d(TAG, userUri.toString());
+			Video video = new Video(returnedUri, mUserId);
+			video.store(this);
 		}
 		
-	}
-
-	private ContentValues createOutboundVideoValues(Uri uri) {
-		final ContentValues values = new ContentValues();
-		values.put(VideoColumns.VIDEO_DATE, createCurrentDate());
-		values.put(VideoColumns.VIDEO_FILE_PATH, uri.toString());
-		values.put(VideoColumns.USER_ID, Users.getUserId(mUserUri));
-		
-		return values;
 	}
 	
     

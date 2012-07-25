@@ -16,13 +16,11 @@
 
 package com.warmice.android.videomessaging.ui;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import com.warmice.android.videomessaging.R;
 import com.warmice.android.videomessaging.VideoApplication;
 import com.warmice.android.videomessaging.provider.MessagingContract.UserColumns;
 import com.warmice.android.videomessaging.provider.MessagingContract.Users;
+import com.warmice.android.videomessaging.tools.DataUtils;
 import com.warmice.android.videomessaging.ui.actionbar.ActionBarActivity;
 import com.warmice.android.videomessaging.ui.adapter.ConversationListAdapter;
 
@@ -56,6 +54,12 @@ public class ConversationsActivity extends ActionBarActivity implements OnItemCl
         initializeList();
     }
 
+	private void refreshCursor() {
+		final ContentResolver resolver = getContentResolver();
+		final Uri uri = Users.CONTENT_URI;
+		mCursor = resolver.query(uri, null, null, null, null);
+	}
+
 	private void initializeList() {
 		mList = (ListView) findViewById(R.id.message_list);
 		mAdapter = new ConversationListAdapter(this, mCursor);
@@ -74,7 +78,6 @@ public class ConversationsActivity extends ActionBarActivity implements OnItemCl
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
         switch (item.getItemId()) {
         case R.id.menu_new_message:
         	addNewMessage();
@@ -90,41 +93,28 @@ public class ConversationsActivity extends ActionBarActivity implements OnItemCl
 		mAdapter.changeCursor(mCursor);
 	}
 
-	private void refreshCursor() {
-		final ContentResolver resolver = getContentResolver();
-		final Uri uri = Users.CONTENT_URI;
-		mCursor = resolver.query(uri, null, null, null, null);
-	}
-
 	private void addNewMessage() {
 		final ContentResolver resolver = getContentResolver();
 		final Uri uri = Users.CONTENT_URI;
 		final ContentValues values = new ContentValues();
 		values.put(UserColumns.USER_ID, "g-money");
 		values.put(UserColumns.USER_NAME, "La Boa");
-		values.put(UserColumns.USER_LAST_POST_DATE, createCurrentDate());
+		values.put(UserColumns.USER_LAST_POST_DATE, DataUtils.createCurrentDate());
 		
 		final Uri userUri = resolver.insert(uri, values);
 		
 		if (VideoApplication.IS_DEBUGGABLE) Log.d(TAG, userUri.toString());
 	}
 
-	private String createCurrentDate() {
-		final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
-		final Date date = new Date();
-		final String formattedDate = dateFormat.format(date);
-		return formattedDate;
-	}
-
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		Uri uri = mAdapter.getUserUri(position);
-		startVideoActivity(uri);
+		startVideoActivity(position);
 	}
 
-	private void startVideoActivity(Uri uri) {
+	private void startVideoActivity(int conversationPosition) {
 		Intent intent = new Intent(this, MessagesActivity.class);
-		intent.putExtra(MessagesActivity.EXTRA_USER_URI, uri);
+		intent = mAdapter.setupMessagesIntent(intent, conversationPosition);
+		
 		startActivity(intent);
 	}
     

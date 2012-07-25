@@ -4,10 +4,18 @@ import com.warmice.android.videomessaging.R;
 import com.warmice.android.videomessaging.provider.MessagingContract.UserColumns;
 import com.warmice.android.videomessaging.provider.MessagingContract.Users;
 import com.warmice.android.videomessaging.provider.MessagingContract.VideoColumns;
+import com.warmice.android.videomessaging.ui.VideoActivity;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
+import android.provider.MediaStore;
+import android.provider.MediaStore.Video.Thumbnails;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +28,7 @@ public class MessageListAdapter extends CursorAdapter {
 	private final int mNoteIndex;
 	private final int mDateIndex;
 	private final int mUriIndex;
+	private final int mThumbnailIndex;
 
 	@SuppressWarnings("deprecation")
 	public MessageListAdapter(Context context, Cursor c) {
@@ -28,7 +37,8 @@ public class MessageListAdapter extends CursorAdapter {
 		
 		mNoteIndex = c.getColumnIndex(VideoColumns.VIDEO_NOTE);
 		mDateIndex = c.getColumnIndex(VideoColumns.VIDEO_DATE);
-		mUriIndex = c.getColumnIndex(VideoColumns.VIDEO_FILE_PATH);
+		mUriIndex = c.getColumnIndex(VideoColumns.VIDEO_URI);
+		mThumbnailIndex = c.getColumnIndex(VideoColumns.THUMBNAIL_FILE_PATH);
 	}
 
 	@Override
@@ -36,9 +46,17 @@ public class MessageListAdapter extends CursorAdapter {
 		final ViewHolder holder = (ViewHolder) view.getTag();
 		final String name = cursor.getString(mNoteIndex);
 		final String date = cursor.getString(mDateIndex);
+		final String thumbnailFilePath = cursor.getString(mThumbnailIndex);
+		Bitmap thumbnail = loadThumbnail(thumbnailFilePath);
 		
 		holder.note.setText(name);
 		holder.date.setText(date);
+		holder.thumbnail.setImageBitmap(thumbnail);
+	}
+
+	private Bitmap loadThumbnail(String thumbnailFilePath) {
+		final Bitmap thumbnail = BitmapFactory.decodeFile(thumbnailFilePath);
+		return thumbnail;
 	}
 
 	@Override
@@ -61,12 +79,18 @@ public class MessageListAdapter extends CursorAdapter {
 		ImageView thumbnail;
 	}
 
-	public Uri getVideoUri(int position) {
+	public Intent setupStartVideoIntent(Intent intent, int position) {
 		final Cursor c = getCursor();
 		c.moveToPosition(position);
-		final String videoUri = c.getString(mUriIndex);
+
+		final String videoDate = c.getString(mDateIndex);
+		final String videoUriString = c.getString(mUriIndex);
+		final Uri videoUri = Uri.parse(videoUriString);
 		
-		return Uri.parse(videoUri);
+		intent.putExtra(VideoActivity.EXTRA_VIDEO_URI, videoUri);
+		intent.putExtra(VideoActivity.EXTRA_DATE, videoDate);
+		
+		return intent;
 	}
 
 }
