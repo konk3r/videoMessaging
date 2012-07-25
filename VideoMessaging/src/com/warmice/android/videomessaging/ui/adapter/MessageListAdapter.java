@@ -1,21 +1,15 @@
 package com.warmice.android.videomessaging.ui.adapter;
 
 import com.warmice.android.videomessaging.R;
-import com.warmice.android.videomessaging.provider.MessagingContract.UserColumns;
-import com.warmice.android.videomessaging.provider.MessagingContract.Users;
 import com.warmice.android.videomessaging.provider.MessagingContract.VideoColumns;
 import com.warmice.android.videomessaging.ui.VideoActivity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.ThumbnailUtils;
 import android.net.Uri;
-import android.provider.MediaStore;
-import android.provider.MediaStore.Video.Thumbnails;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,7 +69,6 @@ public class MessageListAdapter extends CursorAdapter {
 	private class ViewHolder{
 		TextView note;
 		TextView date;
-		@SuppressWarnings("unused")
 		ImageView thumbnail;
 	}
 

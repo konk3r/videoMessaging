@@ -2,13 +2,11 @@ package com.warmice.android.videomessaging.ui.adapter;
 
 import com.warmice.android.videomessaging.R;
 import com.warmice.android.videomessaging.provider.MessagingContract.UserColumns;
-import com.warmice.android.videomessaging.provider.MessagingContract.Users;
 import com.warmice.android.videomessaging.ui.MessagesActivity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
