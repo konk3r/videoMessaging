@@ -14,17 +14,18 @@
   limitations under the License.
 -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/message_height"
-    android:padding="@dimen/message_padding" >
+<resources>
 
-    <TextView
-        android:id="@+id/contact_name"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/contact_text_height"
-        android:gravity="center"
-        android:text="@string/contact_name"
-        android:textStyle="bold" />
+    <string name="title_activity_sign_in">Sign in</string>
+    
+    <string name="create_account">Create New Account</string>
+    <string name="sign_in">Sign in</string>
+    
+    <string name="username">USERNAME</string>
+    <string name="password">PASSWORD</string>
+    
+    <string name="title_sign_in_failed">Sign in Failed</string>
+    <string name="message_sign_in_failed">Please check the username and password and try again</string>
+    <string name="logging_in">Signing in&#8230;</string>
 
-</RelativeLayout>
+</resources>

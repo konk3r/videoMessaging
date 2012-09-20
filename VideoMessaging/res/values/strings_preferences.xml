@@ -14,17 +14,14 @@
   limitations under the License.
 -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/message_height"
-    android:padding="@dimen/message_padding" >
+<resources>
 
-    <TextView
-        android:id="@+id/contact_name"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/contact_text_height"
-        android:gravity="center"
-        android:text="@string/contact_name"
-        android:textStyle="bold" />
+    <string name="preferences">my_preferences</string>
+    <string name="preference_id">id</string>
+    <string name="preference_username">username</string>
+    <string name="preference_api_key">api_key</string>
+    <string name="preference_full_name">full_name</string>
+    <string name="preference_session_cookie_name">session_name</string>
+    <string name="preference_session_cookie_value">session_value</string>
 
-</RelativeLayout>
+</resources>

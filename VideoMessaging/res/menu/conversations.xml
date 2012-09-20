@@ -6,4 +6,8 @@
         android:icon="@drawable/ic_action_new_message"
         android:orderInCategory="0"
         android:showAsAction="always" />
+    <item android:id="@+id/sign_out"
+        android:title="@string/menu_sign_out"
+        android:orderInCategory="50"
+        android:showAsAction="never" />
 </menu>

@@ -17,16 +17,15 @@ import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class MessageListAdapter extends CursorAdapter {
+public class MessageAdapter extends CursorAdapter {
 	private LayoutInflater mInflater;
 	private final int mNoteIndex;
 	private final int mDateIndex;
 	private final int mUriIndex;
 	private final int mThumbnailIndex;
 
-	@SuppressWarnings("deprecation")
-	public MessageListAdapter(Context context, Cursor c) {
-		super(context, c);
+	public MessageAdapter(Context context, Cursor c) {
+		super(context, c, false);
 		mInflater = LayoutInflater.from(context);
 		
 		mNoteIndex = c.getColumnIndex(VideoColumns.VIDEO_NOTE);

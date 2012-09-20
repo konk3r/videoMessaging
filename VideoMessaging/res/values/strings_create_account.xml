@@ -1,0 +1,32 @@
+<!--
+  Copyright 2011 The Android Open Source Project
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<resources>
+
+    <string name="title_activity_create_account">Create Account</string>
+    
+    <string name="creating_account">Creating account&#8230;</string>
+    
+    <string name="account_first_name">First name</string>
+    <string name="account_last_name">Second Name</string>
+    <string name="account_username">Username</string>
+    <string name="account_password">Password</string>
+    <string name="account_confirm_password">Confirm Password</string>
+    
+    <string name="title_create_account_failed">Could not create account</string>
+    <string name="duplicate_account">Username already exists, please select a new one</string>
+
+</resources>

@@ -21,7 +21,7 @@ import com.warmice.android.videomessaging.R;
 import com.warmice.android.videomessaging.provider.MessagingContract.Users;
 import com.warmice.android.videomessaging.tools.Video;
 import com.warmice.android.videomessaging.ui.actionbar.ActionBarActivity;
-import com.warmice.android.videomessaging.ui.adapter.MessageListAdapter;
+import com.warmice.android.videomessaging.ui.adapter.MessageAdapter;
 
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -48,7 +48,7 @@ public class MessagesActivity extends ActionBarActivity implements OnItemClickLi
 	
 	private ListView mList;
 	private Cursor mCursor;
-	private MessageListAdapter mAdapter;
+	private MessageAdapter mAdapter;
 	
 	private String mUserId;
 	private String mUserName;
@@ -76,7 +76,7 @@ public class MessagesActivity extends ActionBarActivity implements OnItemClickLi
 
 	private void initializeList() {
 		mList = (ListView) findViewById(R.id.message_list);
-		mAdapter = new MessageListAdapter(this, mCursor);
+		mAdapter = new MessageAdapter(this, mCursor);
 		
 		mList.setAdapter(mAdapter);
 		mList.setOnItemClickListener(this);

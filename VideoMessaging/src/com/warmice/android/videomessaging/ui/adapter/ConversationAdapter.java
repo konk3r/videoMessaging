@@ -14,15 +14,14 @@ import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class ConversationListAdapter extends CursorAdapter {
+public class ConversationAdapter extends CursorAdapter {
 	private LayoutInflater mInflater;
 	private final int mNameIndex;
 	private final int mIdIndex;
 	private final int mDateIndex;
 
-	@SuppressWarnings("deprecation")
-	public ConversationListAdapter(Context context, Cursor c) {
-		super(context, c);
+	public ConversationAdapter(Context context, Cursor c) {
+		super(context, c, false);
 		mInflater = LayoutInflater.from(context);
 		
 		mNameIndex = c.getColumnIndex(UserColumns.USER_NAME);

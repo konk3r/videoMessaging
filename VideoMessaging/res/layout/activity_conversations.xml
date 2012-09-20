@@ -12,13 +12,16 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-  -->
+-->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center">
-    <ListView android:id="@+id/message_list"
+    android:gravity="center" >
+
+    <ListView
+        android:id="@+id/message_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
 </RelativeLayout>

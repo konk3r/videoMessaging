@@ -22,10 +22,12 @@ import com.warmice.android.videomessaging.provider.MessagingContract.UserColumns
 import com.warmice.android.videomessaging.provider.MessagingContract.Users;
 import com.warmice.android.videomessaging.tools.DataUtils;
 import com.warmice.android.videomessaging.ui.actionbar.ActionBarActivity;
-import com.warmice.android.videomessaging.ui.adapter.ConversationListAdapter;
+import com.warmice.android.videomessaging.ui.adapter.ConversationAdapter;
 
+import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -40,10 +42,10 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 public class ConversationsActivity extends ActionBarActivity implements OnItemClickListener {
-	private static final String TAG = "MessagingListActivity";
+	private static final String TAG = "ConversationListActivity";
 	private ListView mList;
 	private Cursor mCursor;
-	private ConversationListAdapter mAdapter;
+	private ConversationAdapter mAdapter;
 	
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,7 +64,7 @@ public class ConversationsActivity extends ActionBarActivity implements OnItemCl
 
 	private void initializeList() {
 		mList = (ListView) findViewById(R.id.message_list);
-		mAdapter = new ConversationListAdapter(this, mCursor);
+		mAdapter = new ConversationAdapter(this, mCursor);
 		
 		mList.setAdapter(mAdapter);
 		mList.setOnItemClickListener(this);
@@ -94,6 +96,8 @@ public class ConversationsActivity extends ActionBarActivity implements OnItemCl
 	}
 
 	private void addNewMessage() {
+		//TODO this will be changed to start a contact list activity
+		promptForUserName();
 		final ContentResolver resolver = getContentResolver();
 		final Uri uri = Users.CONTENT_URI;
 		final ContentValues values = new ContentValues();
@@ -104,6 +108,20 @@ public class ConversationsActivity extends ActionBarActivity implements OnItemCl
 		final Uri userUri = resolver.insert(uri, values);
 		
 		if (VideoApplication.IS_DEBUGGABLE) Log.d(TAG, userUri.toString());
+	}
+
+	private void promptForUserName() {
+		Dialog newContactDialog = createDialog();
+		newContactDialog.show();
+	}
+
+	private Dialog createDialog() {
+		Context mContext = getApplicationContext();
+		Dialog dialog = new Dialog(mContext);
+
+		dialog.setContentView(R.layout.new_user_dialog);
+		dialog.setTitle("Enter contact name");
+		return dialog;
 	}
 
 	@Override

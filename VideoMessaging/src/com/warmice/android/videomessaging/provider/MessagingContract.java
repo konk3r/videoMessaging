@@ -135,6 +135,7 @@ public class MessagingContract {
         public static String getUserId(Uri uri) {
             return uri.getPathSegments().get(1);
         }
+        
     }
 
 }

@@ -21,6 +21,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import com.warmice.android.videomessaging.R;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.XmlResourceParser;
@@ -168,7 +169,8 @@ public class ActionBarHelperBase extends ActionBarHelper {
      * state can be changed to show a loading spinner using
      * {@link com.warmice.android.videomessaging.ui.actionbar.ActionBarHelperBase#setRefreshActionItemState(boolean)}.
      */
-    @SuppressWarnings("deprecation")
+    @TargetApi(4)
+	@SuppressWarnings("deprecation")
 	private View addActionItemCompatFromMenuItem(final MenuItem item) {
         final int itemId = item.getItemId();
 
