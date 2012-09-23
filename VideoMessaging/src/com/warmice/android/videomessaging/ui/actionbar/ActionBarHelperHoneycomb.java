@@ -18,6 +18,7 @@ package com.warmice.android.videomessaging.ui.actionbar;
 
 import com.warmice.android.videomessaging.R;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -29,6 +30,7 @@ import android.view.View;
  * An extension of {@link ActionBarHelper} that provides Android 3.0-specific functionality for
  * Honeycomb tablets. It thus requires API level 11.
  */
+@TargetApi(11)
 public class ActionBarHelperHoneycomb extends ActionBarHelper {
     private Menu mOptionsMenu;
     private View mRefreshIndeterminateProgressView = null;

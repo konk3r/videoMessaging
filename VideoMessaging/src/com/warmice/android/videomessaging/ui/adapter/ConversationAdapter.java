@@ -1,7 +1,7 @@
 package com.warmice.android.videomessaging.ui.adapter;
 
 import com.warmice.android.videomessaging.R;
-import com.warmice.android.videomessaging.provider.MessagingContract.UserColumns;
+import com.warmice.android.videomessaging.provider.MessagingContract.ContactColumns;
 import com.warmice.android.videomessaging.ui.MessagesActivity;
 
 import android.content.Context;
@@ -24,9 +24,9 @@ public class ConversationAdapter extends CursorAdapter {
 		super(context, c, false);
 		mInflater = LayoutInflater.from(context);
 		
-		mNameIndex = c.getColumnIndex(UserColumns.USER_NAME);
-		mIdIndex = c.getColumnIndex(UserColumns.USER_ID);
-		mDateIndex = c.getColumnIndex(UserColumns.USER_LAST_POST_DATE);
+		mNameIndex = c.getColumnIndex(ContactColumns.CONTACT_NAME);
+		mIdIndex = c.getColumnIndex(ContactColumns.CONTACT_ID);
+		mDateIndex = c.getColumnIndex(ContactColumns.CONTACT_LAST_POST_DATE);
 	}
 
 	@Override

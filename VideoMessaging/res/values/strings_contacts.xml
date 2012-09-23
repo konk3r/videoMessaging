@@ -18,5 +18,12 @@
 
     <string name="title_activity_contacts">Add Contact</string>
     <string name="title_add_contact">Enter contact\'s username: </string>
+    <string name="pending_approval">Pending approval&#8230;</string>
+    <string name="tap_to_respond">Tap to respond</string>
+    
+    <string name="respond_to_contact_request">Respond to contact request</string>
+    
+    <string name="approve">Approve</string>
+    <string name="deny">Deny</string>
 
 </resources>

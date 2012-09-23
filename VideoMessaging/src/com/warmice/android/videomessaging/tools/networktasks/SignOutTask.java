@@ -7,9 +7,13 @@ import org.apache.http.message.BasicNameValuePair;
 import com.google.android.gcm.GCMRegistrar;
 import com.warmice.android.videomessaging.R;
 
+import android.content.ContentResolver;
 import android.content.Context;
+import android.net.Uri;
 
 import com.warmice.android.videomessaging.data.User;
+import com.warmice.android.videomessaging.provider.MessagingContract.AuthenticatedTables;
+import com.warmice.android.videomessaging.tools.networktasks.RestService.RestResponse;
 import com.warmice.android.videomessaging.tools.networktasks.RestService.*;
 
 public class SignOutTask extends RestTask {
@@ -32,6 +36,18 @@ public class SignOutTask extends RestTask {
 		setUrl();
 		
 		mUser.signOut(mContext);
+	}
+
+	@Override
+	protected RestResponse doInBackground(Void... params) {
+		clearDatabase();
+		return super.doInBackground(params);
+	}
+
+	private void clearDatabase() {
+		ContentResolver resolver = mContext.getContentResolver();
+		Uri uri = AuthenticatedTables.getClearAllUri();
+		resolver.delete(uri, null, null);
 	}
 
 	private void setupRegistrarAndUnregister() {

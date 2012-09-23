@@ -35,6 +35,7 @@ public class SignInActivity extends ActionBarActivity implements
 			startMainActivity();
 		} else {
 			setContentView(R.layout.activity_sign_in);
+			setTitle(R.string.title_activity_sign_in);
 			loadViews();
 		}
 	}

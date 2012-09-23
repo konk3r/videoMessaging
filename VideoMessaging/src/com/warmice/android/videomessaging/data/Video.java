@@ -1,4 +1,4 @@
-package com.warmice.android.videomessaging.tools;
+package com.warmice.android.videomessaging.data;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -19,6 +19,7 @@ import android.util.Log;
 import com.warmice.android.videomessaging.VideoApplication;
 import com.warmice.android.videomessaging.provider.MessagingContract.VideoColumns;
 import com.warmice.android.videomessaging.provider.MessagingContract.Videos;
+import com.warmice.android.videomessaging.tools.DataUtils;
 
 public class Video {
 

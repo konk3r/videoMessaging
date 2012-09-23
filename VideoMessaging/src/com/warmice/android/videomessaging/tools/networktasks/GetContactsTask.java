@@ -1,7 +1,7 @@
 package com.warmice.android.videomessaging.tools.networktasks;
 
 import com.warmice.android.videomessaging.R;
-import com.warmice.android.videomessaging.data.User;
+import com.warmice.android.videomessaging.data.Contact;
 
 import android.content.Context;
 
@@ -10,7 +10,7 @@ import com.warmice.android.videomessaging.tools.networktasks.RestService.*;
 public class GetContactsTask extends RestTask {
 
 	Context mContext;
-	
+
 	public GetContactsTask(Context context) {
 		super(context, HttpVerb.GET);
 		mContext = context;
@@ -28,15 +28,14 @@ public class GetContactsTask extends RestTask {
 	}
 
 	private String formUrl() {
-		User user = User.load(mContext);
-		String unformattedUrl = mContext.getString(R.string.url_get_contacts);
-		String url = String.format(unformattedUrl, user.id);
+		String url = mContext.getString(R.string.url_get_contacts);
 		return url;
 	}
 
 	@Override
 	protected void onPostExecute(RestResponse result) {
-		super.onPostExecute(result);
+		String json = result.getData();
+		Contact.storeContactsFromJson(mContext, json);
 	}
 
 }

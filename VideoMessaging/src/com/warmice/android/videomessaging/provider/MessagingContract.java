@@ -56,10 +56,12 @@ public class MessagingContract {
         String USER_ID = "fk_user";
     }
 
-    public interface UserColumns {
-        String USER_ID = "user_id";
-        String USER_NAME = "user_name";
-        String USER_LAST_POST_DATE = "user_last_post_date";
+    public interface ContactColumns {
+        String CONTACT_ID = "contact_id";
+        String CONTACT_USERNAME = "contact_username";
+        String CONTACT_NAME = "contact_name";
+        String CONTACT_APPROVAL_STATUS = "contact_approved";
+        String CONTACT_LAST_POST_DATE = "contact_last_post_date";
     }
 
     public static final String CONTENT_AUTHORITY = "com.warmice.android.videomessaging";
@@ -69,6 +71,13 @@ public class MessagingContract {
     private static final String PATH_VIDEOS = "videos";
     private static final String PATH_USERS = "users";
 
+    public static class AuthenticatedTables{
+    	private final static String CLEAR_ALL = "clear_all";
+    	
+    	public static Uri getClearAllUri(){
+            return BASE_CONTENT_URI.buildUpon().appendPath(CLEAR_ALL).build();
+    	}
+    }
     /**
      * Blocks are generic timeslots that {@link Sessions} and other related
      * events fall into.
@@ -102,7 +111,7 @@ public class MessagingContract {
      * Tracks are overall categories for {@link Sessions} and {@link Vendors},
      * such as "Android" or "Enterprise."
      */
-    public static class Users implements UserColumns, BaseColumns {
+    public static class Contacts implements ContactColumns, BaseColumns {
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_USERS).build();
 
@@ -113,7 +122,7 @@ public class MessagingContract {
 
 
         /** Default "ORDER BY" clause. */
-        public static final String DEFAULT_SORT = UserColumns.USER_LAST_POST_DATE + " ASC";
+        public static final String DEFAULT_SORT = ContactColumns.CONTACT_LAST_POST_DATE + " ASC";
 
         /** "All tracks" ID. */
         public static final String ALL_TRACK_ID = "all";

@@ -18,8 +18,8 @@ package com.warmice.android.videomessaging.ui;
 
 import java.io.File;
 import com.warmice.android.videomessaging.R;
-import com.warmice.android.videomessaging.provider.MessagingContract.Users;
-import com.warmice.android.videomessaging.tools.Video;
+import com.warmice.android.videomessaging.data.Video;
+import com.warmice.android.videomessaging.provider.MessagingContract.Contacts;
 import com.warmice.android.videomessaging.ui.actionbar.ActionBarActivity;
 import com.warmice.android.videomessaging.ui.adapter.MessageAdapter;
 
@@ -102,7 +102,7 @@ public class MessagesActivity extends ActionBarActivity implements OnItemClickLi
     }
 
 	private void refreshCursor() {
-		final Uri videoUri = Users.buildVideosUri(mUserId);
+		final Uri videoUri = Contacts.buildVideosUri(mUserId);
 		final ContentResolver resolver = getContentResolver();
 		
 		mCursor = resolver.query(videoUri, null, null, null, null);

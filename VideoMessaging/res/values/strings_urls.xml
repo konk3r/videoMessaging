@@ -19,8 +19,9 @@
     <string name="url_create_account">https://smessages.herokuapp.com/user/sign_up</string>
     <string name="url_login">https://smessages.herokuapp.com/device/login</string>
     <string name="url_logout">https://smessages.herokuapp.com/device/logout</string>
-    <string name="url_get_contacts" formatted="false">https://smessages.herokuapp.com/user/%s/contacts</string>
-    <string name="url_add_contact" formatted="false">https://smessages.herokuapp.com/user/%s/contact/%s/</string>
-    <string name="url_add_device" formatted="false">https://smessages.herokuapp.com/user/%s/device/%s/</string>
+    <string name="url_get_contacts" formatted="false">https://smessages.herokuapp.com/user/contacts</string>
+    <string name="url_add_contact" formatted="false">https://smessages.herokuapp.com/user/contact/%s/</string>
+    <string name="url_add_device" formatted="false">https://smessages.herokuapp.com/user/device/%s/</string>
+    <string name="url_approve_contact" formatted="false">https://smessages.herokuapp.com/user/contact/%s/</string>
 
 </resources>

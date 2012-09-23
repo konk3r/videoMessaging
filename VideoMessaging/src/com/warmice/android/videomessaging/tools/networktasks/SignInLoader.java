@@ -49,22 +49,13 @@ public class SignInLoader extends RestLoader {
 	@Override
 	public void deliverResult(RestResponse data) {
 		if (data.getCode() == HttpStatus.SC_OK){
-			setupForNotifications();
+			registerDeviceForGCM();
 			storeCredentials(data.getData());
 		}
 		super.deliverResult(data);
 	}
-
-	private void setupForNotifications() {
-		registerDevice();
-		storeDeviceId();
-	}
 	
-	private void storeDeviceId() {
-		// TODO Auto-generated method stub
-	}
-
-	private void registerDevice(){
+	private void registerDeviceForGCM(){
 		GCMRegistrar.checkDevice(mContext);
 		GCMRegistrar.checkManifest(mContext);
 		final String senderId = mContext.getString(R.string.notifications_sender_id);

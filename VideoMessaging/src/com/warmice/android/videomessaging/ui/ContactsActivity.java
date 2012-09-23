@@ -1,11 +1,13 @@
 package com.warmice.android.videomessaging.ui;
 
 import com.warmice.android.videomessaging.R;
-import com.warmice.android.videomessaging.provider.MessagingContract.Users;
+import com.warmice.android.videomessaging.provider.MessagingContract.Contacts;
+import com.warmice.android.videomessaging.tools.ContactClickListener;
 import com.warmice.android.videomessaging.tools.networktasks.AddContactTask;
 import com.warmice.android.videomessaging.tools.networktasks.GetContactsTask;
 import com.warmice.android.videomessaging.ui.actionbar.ActionBarActivity;
 import com.warmice.android.videomessaging.ui.adapter.ContactAdapter;
+import com.warmice.android.videomessaging.ui.dialog.AddContactFragment;
 
 import android.os.Bundle;
 import android.database.Cursor;
@@ -36,7 +38,9 @@ public class ContactsActivity extends ActionBarActivity implements
 
 	private void initializeList() {
 		mAdapter = new ContactAdapter(this, null);
+		ContactClickListener clickListener = new ContactClickListener(this);
 		mList.setAdapter(mAdapter);
+		mList.setOnItemClickListener(clickListener);
 		getSupportLoaderManager().initLoader(0, null, this);
 	}
 
@@ -68,7 +72,7 @@ public class ContactsActivity extends ActionBarActivity implements
 
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-		CursorLoader loader = new CursorLoader(this, Users.CONTENT_URI, null,
+		CursorLoader loader = new CursorLoader(this, Contacts.CONTENT_URI, null,
 				null, null, null);
 		return loader;
 	}
@@ -87,4 +91,5 @@ public class ContactsActivity extends ActionBarActivity implements
 	public void addContact(String contactName) {
 		new AddContactTask(this, contactName).execute();
 	}
+
 }

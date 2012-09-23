@@ -16,16 +16,11 @@
 
 <resources>
 
-    <string name="app_name">Gabe\'s video test</string>
-    <string name="alternate_title">An alternate title that is long</string>
-    <string name="toggle_title">Toggle title</string>
-    <string name="record_video">Record Video</string>
+    <string name="app_name">sMessage</string>
     <string name="menu_refresh">Refresh</string>
     <string name="menu_search">Search</string>
-    <string name="menu_share">Share</string>
     <string name="menu_new_conversation">New Conversation</string>
     <string name="menu_record">Record New Message</string>
-    <string name="camera_alert">Device has only one camera!</string>
     <string name="contact_image">Contact Image</string>
     <string name="contact_name">Sharon Amor</string>
     <string name="video_thumbnail">Video Thumbnail</string>

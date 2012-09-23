@@ -1,8 +1,10 @@
 package com.warmice.android.videomessaging;
 
 import com.google.android.gcm.GCMBaseIntentService;
+import com.warmice.android.videomessaging.data.PushMessage;
+import com.warmice.android.videomessaging.tools.MessageFactory;
+import com.warmice.android.videomessaging.tools.NotificationCenter;
 import com.warmice.android.videomessaging.tools.networktasks.AddDeviceTask;
-
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -16,9 +18,10 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 	@Override
 	protected void onMessage(Context context, Intent intent) {
-		if (BuildConfig.DEBUG) {
-			Log.e(TAG, "message received");
-		}
+		PushMessage message = new MessageFactory().buildMessage(intent);
+		Context applicationContext = getApplicationContext();
+		NotificationCenter center = new NotificationCenter(applicationContext);
+		center.buildNotification(message);
 	}
 
 	@Override

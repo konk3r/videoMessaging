@@ -1,6 +1,7 @@
-package com.warmice.android.videomessaging.ui;
+package com.warmice.android.videomessaging.ui.dialog;
 
 import com.warmice.android.videomessaging.R;
+import com.warmice.android.videomessaging.ui.ContactsActivity;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

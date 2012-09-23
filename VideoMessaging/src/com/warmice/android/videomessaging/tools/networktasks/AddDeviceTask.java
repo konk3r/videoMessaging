@@ -1,7 +1,6 @@
 package com.warmice.android.videomessaging.tools.networktasks;
 
 import com.warmice.android.videomessaging.R;
-import com.warmice.android.videomessaging.data.User;
 
 import android.content.Context;
 
@@ -33,9 +32,8 @@ public class AddDeviceTask extends RestTask {
 	}
 
 	private String formUrl() {
-		User user = User.load(mContext);
 		String unformattedUrl = mContext.getString(R.string.url_add_device);
-		String url = String.format(unformattedUrl, user.id, mDeviceId);
+		String url = String.format(unformattedUrl, mDeviceId);
 		return url;
 	}
 

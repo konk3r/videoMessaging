@@ -37,13 +37,13 @@
         android:text="@string/contact_name" />
     
     <TextView
-        android:id="@+id/last_message_date"
+        android:id="@+id/contact_username"
         android:layout_width="100dp"
         android:layout_height="@dimen/contact_text_height"
         android:layout_alignBottom="@id/contact_image"
         android:layout_toRightOf="@+id/contact_image"
         android:layout_alignParentRight="true"
         android:gravity="center"
-        android:text="@string/last_message_date" />
+        android:text="@string/username" />
 
 </RelativeLayout>

@@ -21,7 +21,7 @@
     <string name="creating_account">Creating account&#8230;</string>
     
     <string name="account_first_name">First name</string>
-    <string name="account_last_name">Second Name</string>
+    <string name="account_last_name">Last Name</string>
     <string name="account_username">Username</string>
     <string name="account_password">Password</string>
     <string name="account_confirm_password">Confirm Password</string>

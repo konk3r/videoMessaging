@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import com.warmice.android.videomessaging.provider.MessagingDatabase.Tables;
-import com.warmice.android.videomessaging.provider.MessagingContract.Users;
+import com.warmice.android.videomessaging.provider.MessagingContract.Contacts;
 import com.warmice.android.videomessaging.provider.MessagingContract.Videos;
 import com.warmice.android.videomessaging.util.SelectionBuilder;
 
@@ -42,234 +42,257 @@ import com.warmice.android.videomessaging.util.SelectionBuilder;
  * by {@link SyncService}, and queried by various {@link Activity} instances.
  */
 public class MessagingProvider extends ContentProvider {
-    private static final String TAG = "ScheduleProvider";
-    private static final boolean LOGV = Log.isLoggable(TAG, Log.VERBOSE);
+	private static final String TAG = "ScheduleProvider";
+	private static final boolean LOGV = Log.isLoggable(TAG, Log.VERBOSE);
 
-    private MessagingDatabase mOpenHelper;
+	private MessagingDatabase mOpenHelper;
 
-    private static final UriMatcher sUriMatcher = buildUriMatcher();
+	private static final UriMatcher sUriMatcher = buildUriMatcher();
 
-    private static final int VIDEOS = 100;
-    private static final int VIDEO_ID = 101;
+	private static final int VIDEOS = 100;
+	private static final int VIDEO_ID = 101;
 
-    private static final int USERS = 200;
-    private static final int USER_ID = 201;
-    private static final int USER_ID_VIDEOS = 202;
+	private static final int CONTACT = 200;
+	private static final int CONTACT_ID = 201;
+	private static final int CONTACT_ID_VIDEOS = 202;
 
-    /**
-     * Build and return a {@link UriMatcher} that catches all {@link Uri}
-     * variations supported by this {@link ContentProvider}.
-     */
-    private static UriMatcher buildUriMatcher() {
-        final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
-        final String authority = MessagingContract.CONTENT_AUTHORITY;
+	private static final int CLEAR_ALL = 500;
 
-        matcher.addURI(authority, "videos", VIDEOS);
-        matcher.addURI(authority, "videos/*", VIDEO_ID);
+	/**
+	 * Build and return a {@link UriMatcher} that catches all {@link Uri}
+	 * variations supported by this {@link ContentProvider}.
+	 */
+	private static UriMatcher buildUriMatcher() {
+		final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
+		final String authority = MessagingContract.CONTENT_AUTHORITY;
 
-        matcher.addURI(authority, "users", USERS);
-        matcher.addURI(authority, "users/*", USER_ID);
-        matcher.addURI(authority, "users/*/videos", USER_ID_VIDEOS);
+		matcher.addURI(authority, "videos", VIDEOS);
+		matcher.addURI(authority, "videos/*", VIDEO_ID);
 
-        return matcher;
-    }
+		matcher.addURI(authority, "users", CONTACT);
+		matcher.addURI(authority, "users/*", CONTACT_ID);
+		matcher.addURI(authority, "users/*/videos", CONTACT_ID_VIDEOS);
 
-    @Override
-    public boolean onCreate() {
-        final Context context = getContext();
-        mOpenHelper = new MessagingDatabase(context);
-        return true;
-    }
+		matcher.addURI(authority, "clear_all", CLEAR_ALL);
 
-    /** {@inheritDoc} */
-    @Override
-    public String getType(Uri uri) {
-        final int match = sUriMatcher.match(uri);
-        switch (match) {
-            case VIDEOS:
-                return Videos.CONTENT_TYPE;
-            case VIDEO_ID:
-                return Videos.CONTENT_ITEM_TYPE;
-            case USERS:
-                return Users.CONTENT_TYPE;
-            case USER_ID:
-                return Users.CONTENT_ITEM_TYPE;
-            case USER_ID_VIDEOS:
-                return Videos.CONTENT_TYPE;
-            default:
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
-        }
-    }
+		return matcher;
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
-            String sortOrder) {
-        if (LOGV) Log.v(TAG, "query(uri=" + uri + ", proj=" + Arrays.toString(projection) + ")");
-        final SQLiteDatabase db = mOpenHelper.getReadableDatabase();
+	@Override
+	public boolean onCreate() {
+		final Context context = getContext();
+		mOpenHelper = new MessagingDatabase(context);
+		return true;
+	}
 
-        final int match = sUriMatcher.match(uri);
-        switch (match) {
-            default: {
-                // Most cases are handled with simple SelectionBuilder
-                final SelectionBuilder builder = buildExpandedSelection(uri, match);
-                return builder.where(selection, selectionArgs).query(db, projection, sortOrder);
-            }
-//            case SEARCH_SUGGEST: {
-//                final SelectionBuilder builder = new SelectionBuilder();
-//
-//                // Adjust incoming query to become SQL text match
-//                selectionArgs[0] = selectionArgs[0] + "%";
-//                builder.table(Tables.SEARCH_SUGGEST);
-//                builder.where(selection, selectionArgs);
-//                builder.map(SearchManager.SUGGEST_COLUMN_QUERY,
-//                        SearchManager.SUGGEST_COLUMN_TEXT_1);
-//
-//                projection = new String[] { BaseColumns._ID, SearchManager.SUGGEST_COLUMN_TEXT_1,
-//                        SearchManager.SUGGEST_COLUMN_QUERY };
-//
-//                final String limit = uri.getQueryParameter(SearchManager.SUGGEST_PARAMETER_LIMIT);
-//                return builder.query(db, projection, null, null, SearchSuggest.DEFAULT_SORT, limit);
-//            }
-        }
-    }
+	/** {@inheritDoc} */
+	@Override
+	public String getType(Uri uri) {
+		final int match = sUriMatcher.match(uri);
+		switch (match) {
+		case VIDEOS:
+			return Videos.CONTENT_TYPE;
+		case VIDEO_ID:
+			return Videos.CONTENT_ITEM_TYPE;
+		case CONTACT:
+			return Contacts.CONTENT_TYPE;
+		case CONTACT_ID:
+			return Contacts.CONTENT_ITEM_TYPE;
+		case CONTACT_ID_VIDEOS:
+			return Videos.CONTENT_TYPE;
+		default:
+			throw new UnsupportedOperationException("Unknown uri: " + uri);
+		}
+	}
 
-    /** {@inheritDoc} */
-    @Override
-    public Uri insert(Uri uri, ContentValues values) {
-        if (LOGV) Log.v(TAG, "insert(uri=" + uri + ", values=" + values.toString() + ")");
-        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        final int match = sUriMatcher.match(uri);
-        switch (match) {
-            case VIDEOS: {
-                db.insertOrThrow(Tables.VIDEOS, null, values);
-                getContext().getContentResolver().notifyChange(uri, null);
-                return Videos.buildVideoUri(values.getAsString(Videos.VIDEO_URI));
-            }
-            case USERS: {
-                db.insertOrThrow(Tables.USERS, null, values);
-                getContext().getContentResolver().notifyChange(uri, null);
-                return Users.buildUserUri(values.getAsString(Users.USER_ID));
-            }
-            default: {
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
-            }
-        }
-    }
+	/** {@inheritDoc} */
+	@Override
+	public Cursor query(Uri uri, String[] projection, String selection,
+			String[] selectionArgs, String sortOrder) {
+		if (LOGV) {
+			Log.v(TAG,
+					"query(uri=" + uri + ", proj="
+							+ Arrays.toString(projection) + ")");
+		}
 
-    /** {@inheritDoc} */
-    @Override
-    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        if (LOGV) Log.v(TAG, "update(uri=" + uri + ", values=" + values.toString() + ")");
-        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        final SelectionBuilder builder = buildSimpleSelection(uri);
-        int retVal = builder.where(selection, selectionArgs).update(db, values);
-        getContext().getContentResolver().notifyChange(uri, null);
-        return retVal;
-    }
+		final SQLiteDatabase db = mOpenHelper.getReadableDatabase();
 
-    /** {@inheritDoc} */
-    @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
-        if (LOGV) Log.v(TAG, "delete(uri=" + uri + ")");
-        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        final SelectionBuilder builder = buildSimpleSelection(uri);
-        int retVal = builder.where(selection, selectionArgs).delete(db);
-        getContext().getContentResolver().notifyChange(uri, null);
-        return retVal;
-    }
+		final int match = sUriMatcher.match(uri);
+		final SelectionBuilder builder = buildExpandedSelection(uri, match);
+		Cursor cursor = builder.where(selection, selectionArgs).query(db,
+				projection, sortOrder);
+		cursor.setNotificationUri(getContext().getContentResolver(), uri);
 
-    /**
-     * Apply the given set of {@link ContentProviderOperation}, executing inside
-     * a {@link SQLiteDatabase} transaction. All changes will be rolled back if
-     * any single one fails.
-     */
-    @Override
-    public ContentProviderResult[] applyBatch(ArrayList<ContentProviderOperation> operations)
-            throws OperationApplicationException {
-        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        db.beginTransaction();
-        try {
-            final int numOperations = operations.size();
-            final ContentProviderResult[] results = new ContentProviderResult[numOperations];
-            for (int i = 0; i < numOperations; i++) {
-                results[i] = operations.get(i).apply(this, results, i);
-            }
-            db.setTransactionSuccessful();
-            return results;
-        } finally {
-            db.endTransaction();
-        }
-    }
+		switch (match) {
+		case VIDEOS:
+		case VIDEO_ID: {
 
-    /**
-     * Build a simple {@link SelectionBuilder} to match the requested
-     * {@link Uri}. This is usually enough to support {@link #insert},
-     * {@link #update}, and {@link #delete} operations.
-     */
-    private SelectionBuilder buildSimpleSelection(Uri uri) {
-        final SelectionBuilder builder = new SelectionBuilder();
-        final int match = sUriMatcher.match(uri);
-        switch (match) {
-            case VIDEOS: {
-                return builder.table(Tables.VIDEOS);
-            }
-            case VIDEO_ID: {
-                final String videoId = Videos.getVideoId(uri);
-                return builder.table(Tables.VIDEOS)
-                        .where(Videos.VIDEO_URI + "=?", videoId);
-            }
-            case USERS: {
-                return builder.table(Tables.USERS);
-            }
-            case USER_ID: {
-                final String userId = Users.getUserId(uri);
-                return builder.table(Tables.USERS)
-                        .where(Users.USER_ID + "=?", userId);
-            }
-            case USER_ID_VIDEOS: {
-                final String userId = Users.getUserId(uri);
-                return builder.table(Tables.VIDEOS)
-                        .where(Videos.USER_ID + "=?", userId);
-            }
-            default: {
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
-            }
-        }
-    }
+		}
+		case CONTACT:
+		case CONTACT_ID:
+		case CONTACT_ID_VIDEOS: {
+		}
 
-    /**
-     * Build an advanced {@link SelectionBuilder} to match the requested
-     * {@link Uri}. This is usually only used by {@link #query}, since it
-     * performs table joins useful for {@link Cursor} data.
-     */
-    private SelectionBuilder buildExpandedSelection(Uri uri, int match) {
-        final SelectionBuilder builder = new SelectionBuilder();
-        switch (match) {
-            case VIDEOS: {
-                return builder.table(Tables.USERS);
-            }
-            case VIDEO_ID: {
-                final String videoId = Videos.getVideoId(uri);
-                return builder.table(Tables.VIDEOS)
-                        .where(Videos.VIDEO_URI + "=?", videoId);
-            }
-            case USERS: {
-                return builder.table(Tables.USERS);
-            }
-            case USER_ID: {
-                final String userId = Users.getUserId(uri);
-                return builder.table(Tables.USERS)
-                        .where(Users.USER_ID + "=?", userId);
-            }
-            case USER_ID_VIDEOS: {
-                final String userId = Users.getUserId(uri);
-                return builder.table(Tables.VIDEOS)
-                        .where(Videos.USER_ID + "=?", userId);
-            }
-            default: {
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
-            }
-        }
-    }
+		}
+		return cursor;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Uri insert(Uri uri, ContentValues values) {
+		if (LOGV)
+			Log.v(TAG, "insert(uri=" + uri + ", values=" + values.toString()
+					+ ")");
+		final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+		final int match = sUriMatcher.match(uri);
+		switch (match) {
+		case VIDEOS: {
+			db.insertOrThrow(Tables.VIDEOS, null, values);
+			getContext().getContentResolver().notifyChange(uri, null);
+			return Videos.buildVideoUri(values.getAsString(Videos.VIDEO_URI));
+		}
+		case CONTACT: {
+			db.insertOrThrow(Tables.CONTACTS, null, values);
+			getContext().getContentResolver().notifyChange(uri, null);
+			return Contacts.buildUserUri(values
+					.getAsString(Contacts.CONTACT_ID));
+		}
+		default: {
+			throw new UnsupportedOperationException("Unknown uri: " + uri);
+		}
+		}
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public int update(Uri uri, ContentValues values, String selection,
+			String[] selectionArgs) {
+		if (LOGV)
+			Log.v(TAG, "update(uri=" + uri + ", values=" + values.toString()
+					+ ")");
+		final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+		final SelectionBuilder builder = buildSimpleSelection(uri);
+		int retVal = builder.where(selection, selectionArgs).update(db, values);
+		getContext().getContentResolver().notifyChange(uri, null);
+		return retVal;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public int delete(Uri uri, String selection, String[] selectionArgs) {
+		if (LOGV)
+			Log.v(TAG, "delete(uri=" + uri + ")");
+		final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+		final int match = sUriMatcher.match(uri);
+		int retVal = 0;
+
+		switch (match) {
+		case CLEAR_ALL:
+			retVal += db.delete(Tables.CONTACTS, null, null);
+			retVal += db.delete(Tables.VIDEOS, null, null);
+			break;
+
+		default:
+			final SelectionBuilder builder = buildSimpleSelection(uri);
+			retVal = builder.where(selection, selectionArgs).delete(db);
+		}
+
+		getContext().getContentResolver().notifyChange(uri, null);
+		return retVal;
+	}
+
+	/**
+	 * Apply the given set of {@link ContentProviderOperation}, executing inside
+	 * a {@link SQLiteDatabase} transaction. All changes will be rolled back if
+	 * any single one fails.
+	 */
+	@Override
+	public ContentProviderResult[] applyBatch(
+			ArrayList<ContentProviderOperation> operations)
+			throws OperationApplicationException {
+		final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+		db.beginTransaction();
+		try {
+			final int numOperations = operations.size();
+			final ContentProviderResult[] results = new ContentProviderResult[numOperations];
+			for (int i = 0; i < numOperations; i++) {
+				results[i] = operations.get(i).apply(this, results, i);
+			}
+			db.setTransactionSuccessful();
+			return results;
+		} finally {
+			db.endTransaction();
+		}
+	}
+
+	/**
+	 * Build a simple {@link SelectionBuilder} to match the requested
+	 * {@link Uri}. This is usually enough to support {@link #insert},
+	 * {@link #update}, and {@link #delete} operations.
+	 */
+	private SelectionBuilder buildSimpleSelection(Uri uri) {
+		final SelectionBuilder builder = new SelectionBuilder();
+		final int match = sUriMatcher.match(uri);
+		switch (match) {
+		case VIDEOS: {
+			return builder.table(Tables.VIDEOS);
+		}
+		case VIDEO_ID: {
+			final String videoId = Videos.getVideoId(uri);
+			return builder.table(Tables.VIDEOS).where(Videos.VIDEO_URI + "=?",
+					videoId);
+		}
+		case CONTACT: {
+			return builder.table(Tables.CONTACTS);
+		}
+		case CONTACT_ID: {
+			final String userId = Contacts.getUserId(uri);
+			return builder.table(Tables.CONTACTS).where(
+					Contacts.CONTACT_ID + "=?", userId);
+		}
+		case CONTACT_ID_VIDEOS: {
+			final String userId = Contacts.getUserId(uri);
+			return builder.table(Tables.VIDEOS).where(Videos.USER_ID + "=?",
+					userId);
+		}
+		default: {
+			throw new UnsupportedOperationException("Unknown uri: " + uri);
+		}
+		}
+	}
+
+	/**
+	 * Build an advanced {@link SelectionBuilder} to match the requested
+	 * {@link Uri}. This is usually only used by {@link #query}, since it
+	 * performs table joins useful for {@link Cursor} data.
+	 */
+	private SelectionBuilder buildExpandedSelection(Uri uri, int match) {
+		final SelectionBuilder builder = new SelectionBuilder();
+		switch (match) {
+		case VIDEOS: {
+			return builder.table(Tables.CONTACTS);
+		}
+		case VIDEO_ID: {
+			final String videoId = Videos.getVideoId(uri);
+			return builder.table(Tables.VIDEOS).where(Videos.VIDEO_URI + "=?",
+					videoId);
+		}
+		case CONTACT: {
+			return builder.table(Tables.CONTACTS);
+		}
+		case CONTACT_ID: {
+			final String userId = Contacts.getUserId(uri);
+			return builder.table(Tables.CONTACTS).where(
+					Contacts.CONTACT_ID + "=?", userId);
+		}
+		case CONTACT_ID_VIDEOS: {
+			final String userId = Contacts.getUserId(uri);
+			return builder.table(Tables.VIDEOS).where(Videos.USER_ID + "=?",
+					userId);
+		}
+		default: {
+			throw new UnsupportedOperationException("Unknown uri: " + uri);
+		}
+		}
+	}
 }

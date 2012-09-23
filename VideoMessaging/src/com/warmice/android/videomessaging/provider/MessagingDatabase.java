@@ -16,7 +16,7 @@
 
 package com.warmice.android.videomessaging.provider;
 
-import com.warmice.android.videomessaging.provider.MessagingContract.UserColumns;
+import com.warmice.android.videomessaging.provider.MessagingContract.ContactColumns;
 import com.warmice.android.videomessaging.provider.MessagingContract.VideoColumns;
 
 import android.content.Context;
@@ -43,7 +43,7 @@ public class MessagingDatabase extends SQLiteOpenHelper {
 
     interface Tables {
         String VIDEOS = "videos";
-        String USERS = "users";
+        String CONTACTS = "contacts";
     }
 
     public MessagingDatabase(Context context) {
@@ -61,12 +61,14 @@ public class MessagingDatabase extends SQLiteOpenHelper {
                 + VideoColumns.USER_ID + " TEXT NOT NULL,"
                 + "UNIQUE (" + VideoColumns.VIDEO_URI + ") ON CONFLICT REPLACE)");
 
-        db.execSQL("CREATE TABLE " + Tables.USERS + " ("
+        db.execSQL("CREATE TABLE " + Tables.CONTACTS + " ("
                 + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + UserColumns.USER_ID + " TEXT NOT NULL,"
-                + UserColumns.USER_NAME + " TEXT NOT NULL,"
-                + UserColumns.USER_LAST_POST_DATE + " DATE,"
-                + "UNIQUE (" + UserColumns.USER_ID + ") ON CONFLICT REPLACE)");
+                + ContactColumns.CONTACT_ID + " TEXT NOT NULL,"
+                + ContactColumns.CONTACT_APPROVAL_STATUS + " TEXT NOT NULL,"
+                + ContactColumns.CONTACT_USERNAME + " TEXT NOT NULL,"
+                + ContactColumns.CONTACT_NAME + " TEXT,"
+                + ContactColumns.CONTACT_LAST_POST_DATE + " DATE,"
+                + "UNIQUE (" + ContactColumns.CONTACT_ID + ") ON CONFLICT REPLACE)");
     }
 
     @Override
@@ -75,8 +77,8 @@ public class MessagingDatabase extends SQLiteOpenHelper {
         Log.w(TAG, "Destroying old data during upgrade");
 
         db.execSQL("DROP TABLE IF EXISTS " + Tables.VIDEOS);
-        db.execSQL("DROP TABLE IF EXISTS " + Tables.USERS);
+        db.execSQL("DROP TABLE IF EXISTS " + Tables.CONTACTS);
 
-        onCreate(db);
-    }
+		onCreate(db);
+	}
 }

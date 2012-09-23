@@ -16,4 +16,6 @@
 
 <resources>
     <color name="actionbar_title_color">#224894</color>
+    
+    <color name="disabled_text_color">#ff808080</color>
 </resources>

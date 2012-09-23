@@ -18,8 +18,8 @@ package com.warmice.android.videomessaging.ui;
 
 import com.warmice.android.videomessaging.R;
 import com.warmice.android.videomessaging.VideoApplication;
-import com.warmice.android.videomessaging.provider.MessagingContract.UserColumns;
-import com.warmice.android.videomessaging.provider.MessagingContract.Users;
+import com.warmice.android.videomessaging.provider.MessagingContract.ContactColumns;
+import com.warmice.android.videomessaging.provider.MessagingContract.Contacts;
 import com.warmice.android.videomessaging.tools.DataUtils;
 import com.warmice.android.videomessaging.ui.actionbar.ActionBarActivity;
 import com.warmice.android.videomessaging.ui.adapter.ConversationAdapter;
@@ -58,7 +58,7 @@ public class ConversationsActivity extends ActionBarActivity implements OnItemCl
 
 	private void refreshCursor() {
 		final ContentResolver resolver = getContentResolver();
-		final Uri uri = Users.CONTENT_URI;
+		final Uri uri = Contacts.CONTENT_URI;
 		mCursor = resolver.query(uri, null, null, null, null);
 	}
 
@@ -99,11 +99,11 @@ public class ConversationsActivity extends ActionBarActivity implements OnItemCl
 		//TODO this will be changed to start a contact list activity
 		promptForUserName();
 		final ContentResolver resolver = getContentResolver();
-		final Uri uri = Users.CONTENT_URI;
+		final Uri uri = Contacts.CONTENT_URI;
 		final ContentValues values = new ContentValues();
-		values.put(UserColumns.USER_ID, "g-money");
-		values.put(UserColumns.USER_NAME, "La Boa");
-		values.put(UserColumns.USER_LAST_POST_DATE, DataUtils.createCurrentDate());
+		values.put(ContactColumns.CONTACT_ID, "g-money");
+		values.put(ContactColumns.CONTACT_NAME, "La Boa");
+		values.put(ContactColumns.CONTACT_LAST_POST_DATE, DataUtils.createCurrentDate());
 		
 		final Uri userUri = resolver.insert(uri, values);
 		

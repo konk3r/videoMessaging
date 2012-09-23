@@ -5,6 +5,7 @@ import com.warmice.android.videomessaging.R;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.os.AsyncTask;
 
 public class User {
 
@@ -23,13 +24,7 @@ public class User {
 	}
 
 	public void save(Context context) {
-		SharedPreferences.Editor editor = getEditor(context);
-
-		editor.putString(mUserKey, username);
-		editor.putString(mApiKey, api_key);
-		editor.putString(mNameKey, name);
-		editor.putInt(mIdKey, id);
-		editor.commit();
+		new SaveUserTask().execute(context);
 	}
 
 	public static User load(Context context) {
@@ -79,5 +74,22 @@ public class User {
 
 	public boolean isSignedIn() {
 		return username != null;
+	}
+	
+	class SaveUserTask extends AsyncTask<Context, Void, Void>{
+
+		@Override
+		protected Void doInBackground(Context... params) {
+			SharedPreferences.Editor editor = getEditor(params[0]);
+
+			editor.putString(mUserKey, username);
+			editor.putString(mApiKey, api_key);
+			editor.putString(mNameKey, name);
+			editor.putInt(mIdKey, id);
+			editor.commit();
+			
+			return null;
+		}
+		
 	}
 }

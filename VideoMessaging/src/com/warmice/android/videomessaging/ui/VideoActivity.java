@@ -19,6 +19,8 @@ package com.warmice.android.videomessaging.ui;
 import com.warmice.android.videomessaging.R;
 import com.warmice.android.videomessaging.ui.actionbar.ActionBarActivity;
 
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -26,6 +28,8 @@ import android.os.Bundle;
 import android.widget.MediaController;
 import android.widget.VideoView;
 
+@SuppressLint("NewApi")
+@TargetApi(11)
 public class VideoActivity extends ActionBarActivity {
 	public final static int ACTION_TAKE_VIDEO = 1;
 	
