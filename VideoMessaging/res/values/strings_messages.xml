@@ -16,12 +16,9 @@
 
 <resources>
 
-    <string name="title_contact_request">Contact Request</string>
-    <string name="message_contact_request">New contact request from %s</string>
+    <string name="menu_record">Record New Message</string>
+    <string name="message_text">&#8230;</string>
+    <string name="user_picture">User picture</string>
+    <string name="send">Send message</string>
 
-    <string name="title_contact_accepted">New Contact</string>
-    <string name="message_contact_accepted">Request accepted by %s</string>
-    
-    <string name="title_new_message">New Message</string>
-    <string name="message_new_message">%s new messages</string>
 </resources>

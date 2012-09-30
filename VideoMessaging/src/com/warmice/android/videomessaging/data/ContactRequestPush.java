@@ -1,37 +1,88 @@
 package com.warmice.android.videomessaging.data;
 
+import java.util.ArrayList;
+
 import com.warmice.android.videomessaging.R;
 import com.warmice.android.videomessaging.ui.ContactsActivity;
 
 import android.content.Context;
 import android.content.Intent;
 
-public class ContactRequestPush extends PushMessage{
-	
+public class ContactRequestPush extends PushMessage {
+
 	public Content content;
-	
+	private ArrayList<Contact> mContacts;
+	int mType;
+
+	public ContactRequestPush() {
+	}
+
+	public ContactRequestPush(ArrayList<Contact> contacts) {
+		mContacts = contacts;
+		setType();
+	}
+
+	private void setType() {
+		if (mContacts.size() < 1) {
+			return;
+		}
+		
+		Contact contact = mContacts.get(0);
+		if (contact.approved.equals("true")) {
+			mType = TYPE_REQUEST_ACCEPTED;
+			type = CONTACT_ACCEPTED;
+		} else if (contact.approved.equals("response_requested")) {
+			mType = TYPE_CONTACT_REQUEST;
+			type = CONTACT_REQUEST;
+		}
+	}
+
 	@Override
 	public String getMessage(Context context) {
 		String name = getName();
-		String unformattedMessage = context.getString(R.string.message_contact_request);
+		String unformattedMessage = null;
+		switch (mType) {
+		case TYPE_CONTACT_REQUEST:
+			unformattedMessage = context
+					.getString(R.string.message_contact_request);
+			break;
+		case TYPE_REQUEST_ACCEPTED:
+			unformattedMessage = context
+					.getString(R.string.message_contact_accepted);
+		}
 		return String.format(unformattedMessage, name);
 	}
 
 	private String getName() {
-		if(content.name.equals(" ")){
-			return content.username;
+		Contact contact = mContacts.get(0);
+		if (contact.name.equals(" ")) {
+			return contact.username;
 		}
-		return content.name;
+		return contact.name;
 	}
 
 	@Override
 	public String getTitle(Context context) {
-		return context.getString(R.string.title_contact_request);
+		switch (mType) {
+		case TYPE_CONTACT_REQUEST:
+			return context.getString(R.string.title_contact_request);
+		case TYPE_REQUEST_ACCEPTED:
+			return context.getString(R.string.title_contact_accepted);
+		default:
+			return null;
+		}
 	}
 
 	@Override
 	public String getTickerText(Context context) {
-		return context.getString(R.string.title_contact_request);
+		switch(mType){
+		case TYPE_CONTACT_REQUEST:
+			return context.getString(R.string.title_contact_request);
+		case TYPE_REQUEST_ACCEPTED:
+			return context.getString(R.string.title_contact_accepted);
+		default:
+			return null;
+		}
 	}
 
 	@Override
@@ -43,7 +94,15 @@ public class ContactRequestPush extends PushMessage{
 	public Intent getIntent(Context context) {
 		return new Intent(context, ContactsActivity.class);
 	}
-	
+
+	@Override
+	public boolean hasNotifications() {
+		if (mContacts != null && mContacts.size() > 0) {
+			return true;
+		}
+		return false;
+	}
+
 	public class Content {
 		public String name;
 		public String username;

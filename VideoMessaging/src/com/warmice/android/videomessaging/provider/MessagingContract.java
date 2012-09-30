@@ -19,132 +19,96 @@ package com.warmice.android.videomessaging.provider;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-/**
- * Contract class for interacting with {@link MessagingProvider}. Unless
- * otherwise noted, all time-based fields are milliseconds since epoch and can
- * be compared against {@link System#currentTimeMillis()}.
- * <p>
- * The backing {@link android.content.ContentProvider} assumes that {@link Uri} are generated
- * using stronger {@link String} identifiers, instead of {@code int}
- * {@link BaseColumns#_ID} values, which are prone to shuffle during sync.
- */
 public class MessagingContract {
 
-    /**
-     * Special value for {@link SyncColumns#UPDATED} indicating that an entry
-     * has never been updated, or doesn't exist yet.
-     */
-    public static final long UPDATED_NEVER = -2;
+	public static final long UPDATED_NEVER = -2;
+	public static final long UPDATED_UNKNOWN = -1;
 
-    /**
-     * Special value for {@link SyncColumns#UPDATED} indicating that the last
-     * update time is unknown, usually when inserted from a local file source.
-     */
-    public static final long UPDATED_UNKNOWN = -1;
+	public interface SyncColumns {
+		/** Last time this entry was updated or synchronized. */
+		String UPDATED = "updated";
+	}
 
-    public interface SyncColumns {
-        /** Last time this entry was updated or synchronized. */
-        String UPDATED = "updated";
-    }
+	public interface MessageColumns {
+		String MESSAGE_ID = "message_id";
+		String MESSAGE_TYPE = "message_type";
+		String MESSAGE_SENT_DATE = "message_sent_date";
+		String MESSAGE_RECEIVED_DATE = "message_received_date";
+		String MESSAGE_TEXT = "message_note";
+		String MESSAGE_IMAGE_PATH = "message_image_uri";
+		String MESSAGE_VIDEO_URI = "message_video_uri";
 
-    public interface VideoColumns {
-        String VIDEO_URI = "video_file_path";
-        String THUMBNAIL_FILE_PATH = "video_thumbnail";
-        String VIDEO_DATE = "video_date";
-        String VIDEO_NOTE = "video_note";
-        
-        String USER_ID = "fk_user";
-    }
+		String RECEIVER_ID = "fk_receiver";
+		String SENDER_ID = "fk_sender";
+	}
 
-    public interface ContactColumns {
-        String CONTACT_ID = "contact_id";
-        String CONTACT_USERNAME = "contact_username";
-        String CONTACT_NAME = "contact_name";
-        String CONTACT_APPROVAL_STATUS = "contact_approved";
-        String CONTACT_LAST_POST_DATE = "contact_last_post_date";
-    }
+	public interface ContactColumns {
+		String CONTACT_ID = "contact_id";
+		String CONTACT_USERNAME = "contact_username";
+		String CONTACT_NAME = "contact_name";
+		String CONTACT_APPROVAL_STATUS = "contact_approved";
+		String CONTACT_LAST_POST_DATE = "contact_last_post_date";
+	}
 
-    public static final String CONTENT_AUTHORITY = "com.warmice.android.videomessaging";
+	public static final String CONTENT_AUTHORITY = "com.warmice.android.videomessaging";
 
-    private static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
+	private static final Uri BASE_CONTENT_URI = Uri.parse("content://"
+			+ CONTENT_AUTHORITY);
 
-    private static final String PATH_VIDEOS = "videos";
-    private static final String PATH_USERS = "users";
+	private static final String PATH_MESSAGES = "messages";
+	private static final String PATH_USERS = "users";
 
-    public static class AuthenticatedTables{
-    	private final static String CLEAR_ALL = "clear_all";
-    	
-    	public static Uri getClearAllUri(){
-            return BASE_CONTENT_URI.buildUpon().appendPath(CLEAR_ALL).build();
-    	}
-    }
-    /**
-     * Blocks are generic timeslots that {@link Sessions} and other related
-     * events fall into.
-     */
-    public static class Videos implements VideoColumns, BaseColumns {
-        public static final Uri CONTENT_URI =
-                BASE_CONTENT_URI.buildUpon().appendPath(PATH_VIDEOS).build();
+	public static class AuthenticatedTables {
+		private final static String CLEAR_ALL = "clear_all";
 
-        public static final String CONTENT_TYPE =
-                "vnd.android.cursor.dir/vnd.warmice.video";
-        public static final String CONTENT_ITEM_TYPE =
-                "vnd.android.cursor.item/vnd.warmice.video";
+		public static Uri getClearAllUri() {
+			return BASE_CONTENT_URI.buildUpon().appendPath(CLEAR_ALL).build();
+		}
+	}
 
+	public static class Messages implements MessageColumns, BaseColumns {
+		public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon()
+				.appendPath(PATH_MESSAGES).build();
 
-        /** Default "ORDER BY" clause. */
-        public static final String DEFAULT_SORT = VideoColumns.VIDEO_DATE + " ASC";
+		public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.warmice.message";
+		public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.warmice.message";
 
-        /** Build {@link Uri} for requested {@link #BLOCK_ID}. */
-        public static Uri buildVideoUri(String videoId) {
-            return CONTENT_URI.buildUpon().appendPath(videoId).build();
-        }
+		public static final String DEFAULT_SORT = MessageColumns.MESSAGE_SENT_DATE
+				+ " ASC";
 
-        /** Read {@link #BLOCK_ID} from {@link Blocks} {@link Uri}. */
-        public static String getVideoId(Uri uri) {
-            return uri.getPathSegments().get(1);
-        }
+		public static Uri buildMessageUri(String videoId) {
+			return CONTENT_URI.buildUpon().appendPath(videoId).build();
+		}
 
-    }
+		public static String getMessageId(Uri uri) {
+			return uri.getPathSegments().get(1);
+		}
 
-    /**
-     * Tracks are overall categories for {@link Sessions} and {@link Vendors},
-     * such as "Android" or "Enterprise."
-     */
-    public static class Contacts implements ContactColumns, BaseColumns {
-        public static final Uri CONTENT_URI =
-                BASE_CONTENT_URI.buildUpon().appendPath(PATH_USERS).build();
+	}
 
-        public static final String CONTENT_TYPE =
-                "vnd.android.cursor.dir/vnd.warmice.user";
-        public static final String CONTENT_ITEM_TYPE =
-                "vnd.android.cursor.item/vnd.warmice.user";
+	public static class Contacts implements ContactColumns, BaseColumns {
+		public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon()
+				.appendPath(PATH_USERS).build();
 
+		public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.warmice.user";
+		public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.warmice.user";
 
-        /** Default "ORDER BY" clause. */
-        public static final String DEFAULT_SORT = ContactColumns.CONTACT_LAST_POST_DATE + " ASC";
+		public static final String DEFAULT_SORT = ContactColumns.CONTACT_LAST_POST_DATE
+				+ " ASC";
 
-        /** "All tracks" ID. */
-        public static final String ALL_TRACK_ID = "all";
+		public static final String ALL_TRACK_ID = "all";
 
-        /** Build {@link Uri} for requested {@link #TRACK_ID}. */
-        public static Uri buildUserUri(String userId) {
-            return CONTENT_URI.buildUpon().appendPath(userId).build();
-        }
+		public static Uri buildUserUri(String userId) {
+			return CONTENT_URI.buildUpon().appendPath(userId).build();
+		}
 
-        /**
-         * Build {@link Uri} that references any {@link Sessions} associated
-         * with the requested {@link #TRACK_ID}.
-         */
-        public static Uri buildVideosUri(String userId) {
-            return CONTENT_URI.buildUpon().appendPath(userId).appendPath(PATH_VIDEOS).build();
-        }
+		public static Uri buildMessagesUri(String contactId) {
+			return CONTENT_URI.buildUpon().appendPath(contactId)
+					.appendPath(PATH_MESSAGES).build();
+		}
 
-        /** Read {@link #TRACK_ID} from {@link Tracks} {@link Uri}. */
-        public static String getUserId(Uri uri) {
-            return uri.getPathSegments().get(1);
-        }
-        
-    }
-
+		public static String getUserId(Uri uri) {
+			return uri.getPathSegments().get(1);
+		}
+	}
 }

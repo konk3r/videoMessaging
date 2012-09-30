@@ -5,11 +5,12 @@ import org.codehaus.jackson.map.ObjectMapper;
 import com.warmice.android.videomessaging.data.BasePush;
 import com.warmice.android.videomessaging.data.ContactAcceptedPush;
 import com.warmice.android.videomessaging.data.ContactRequestPush;
+import com.warmice.android.videomessaging.data.MessageNewPush;
 import com.warmice.android.videomessaging.data.PushMessage;
 
 import android.content.Intent;
 
-public class MessageFactory {
+public class PushMessageFactory {
 	public static final String EXTRA_MESSAGE_TEXT = "message_text";
 	
 	private String mData;
@@ -47,6 +48,9 @@ public class MessageFactory {
 				break;
 			case PushMessage.TYPE_REQUEST_ACCEPTED:
 				mMessage = mapper.readValue(mData, ContactAcceptedPush.class);
+				break;
+			case PushMessage.TYPE_MESSAGE_NEW:
+				mMessage = mapper.readValue(mData, MessageNewPush.class);
 				break;
 			}
 		} catch (Exception e) {

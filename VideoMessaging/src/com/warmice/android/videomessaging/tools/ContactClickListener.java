@@ -1,13 +1,9 @@
 package com.warmice.android.videomessaging.tools;
 
-import com.warmice.android.videomessaging.R;
-import com.warmice.android.videomessaging.ui.ContactsActivity;
+import com.warmice.android.videomessaging.ui.MessagesActivity;
 import com.warmice.android.videomessaging.ui.adapter.ContactAdapter;
 import com.warmice.android.videomessaging.ui.dialog.ContactRequestedFragment;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -49,7 +45,21 @@ public class ContactClickListener implements OnItemClickListener{
 	}
 
 	private void onStandardContactClick() {
-		sendNotification();
+		loadMessageActivity();
+	}
+
+	private void loadMessageActivity() {
+		Intent intent = buildIntent();
+		mContext.startActivity(intent);
+	}
+
+	private Intent buildIntent() {
+		Intent intent = new Intent(mContext, MessagesActivity.class);
+		int contactId = mAdapter.getContactId(mPosition);
+		String username = mAdapter.getUsername(mPosition);
+		intent.putExtra(MessagesActivity.EXTRA_CONTACT_ID, contactId);
+		intent.putExtra(MessagesActivity.EXTRA_USERNAME, username);
+		return intent;
 	}
 
 	private void onContactRequestedClick() {
@@ -70,34 +80,6 @@ public class ContactClickListener implements OnItemClickListener{
 
 	private void onContactPendingClick() {
 		
-	}
-
-
-	@SuppressWarnings("deprecation")
-	private void sendNotification() {
-		String ns = Context.NOTIFICATION_SERVICE;
-		NotificationManager mNotificationManager = (NotificationManager) mContext.getSystemService(ns);
-		
-		int icon = R.drawable.ic_stat_contact_request;
-		CharSequence tickerText = "Hello";
-		long when = System.currentTimeMillis();
-
-		Notification notification = new Notification(icon, tickerText, when);
-		notification.defaults |= Notification.DEFAULT_VIBRATE;
-		notification.defaults |= Notification.DEFAULT_SOUND;
-		notification.defaults |= Notification.DEFAULT_LIGHTS;
-		notification.flags |= Notification.FLAG_AUTO_CANCEL;
-		
-		CharSequence contentTitle = "My notification";
-		CharSequence contentText = "Hello World!";
-		Intent notificationIntent = new Intent(mContext, ContactsActivity.class);
-		PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, notificationIntent, 0);
-
-		notification.setLatestEventInfo(mContext, contentTitle, contentText, contentIntent);
-		final int HELLO_ID = 1;
-		
-
-		mNotificationManager.notify(HELLO_ID, notification);
 	}
 
 }

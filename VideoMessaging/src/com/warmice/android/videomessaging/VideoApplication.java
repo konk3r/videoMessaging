@@ -10,8 +10,6 @@ import android.os.StrictMode;
 @ReportsCrashes(formKey = "dDB6WUxFamJvQVR6WlIzQ3FoLUZpa1E6MQ") 
 public class VideoApplication extends Application {
 	
-	public static final boolean IS_DEBUGGABLE = true;
-	
     @SuppressLint("NewApi")
 	@Override
     public void onCreate() {

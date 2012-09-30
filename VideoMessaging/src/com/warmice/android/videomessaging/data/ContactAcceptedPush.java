@@ -36,7 +36,6 @@ public class ContactAcceptedPush extends PushMessage{
 
 	@Override
 	public int getIcon() {
-		//TODO update icon
 		return R.drawable.ic_stat_contact_request;
 	}
 

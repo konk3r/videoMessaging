@@ -17,7 +17,7 @@
 package com.warmice.android.videomessaging.provider;
 
 import com.warmice.android.videomessaging.provider.MessagingContract.ContactColumns;
-import com.warmice.android.videomessaging.provider.MessagingContract.VideoColumns;
+import com.warmice.android.videomessaging.provider.MessagingContract.MessageColumns;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -30,54 +30,55 @@ import android.util.Log;
  * {@link MessagingProvider}.
  */
 public class MessagingDatabase extends SQLiteOpenHelper {
-    private static final String TAG = "MessagingDatabase";
+	private static final String TAG = "MessagingDatabase";
 
-    private static final String DATABASE_NAME = "messages.db";
+	private static final String DATABASE_NAME = "messages.db";
 
-    // NOTE: carefully update onUpgrade() when bumping database versions to make
-    // sure user data is saved.
+	private static final int VERSION = 6;
 
-    private static final int VERSION = 2;
+	private static final int DATABASE_VERSION = VERSION;
 
-    private static final int DATABASE_VERSION = VERSION;
+	interface Tables {
+		String MESSAGES = "videos";
+		String CONTACTS = "contacts";
+	}
 
-    interface Tables {
-        String VIDEOS = "videos";
-        String CONTACTS = "contacts";
-    }
+	public MessagingDatabase(Context context) {
+		super(context, DATABASE_NAME, null, DATABASE_VERSION);
+	}
 
-    public MessagingDatabase(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
-    }
+	@Override
+	public void onCreate(SQLiteDatabase db) {
+		db.execSQL("CREATE TABLE " + Tables.MESSAGES + " (" + BaseColumns._ID
+				+ " INTEGER PRIMARY KEY AUTOINCREMENT,"
+				+ MessageColumns.MESSAGE_SENT_DATE + " DATETIME NOT NULL,"
+				+ MessageColumns.RECEIVER_ID + " TEXT NOT NULL,"
+				+ MessageColumns.SENDER_ID + " TEXT NOT NULL,"
+				+ MessageColumns.MESSAGE_TYPE + " TEXT NOT NULL,"
+				+ MessageColumns.MESSAGE_RECEIVED_DATE + " DATETIME,"
+				+ MessageColumns.MESSAGE_TEXT + " TEXT,"
+				+ MessageColumns.MESSAGE_IMAGE_PATH + " TEXT,"
+				+ MessageColumns.MESSAGE_VIDEO_URI + " TEXT,"
+				+ MessageColumns.MESSAGE_ID + " INTEGER,"
+				+ "UNIQUE (" + MessageColumns.MESSAGE_ID + ") ON CONFLICT REPLACE)");
 
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE " + Tables.VIDEOS + " ("
-                + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + VideoColumns.VIDEO_DATE + " DATE NOT NULL,"
-                + VideoColumns.VIDEO_NOTE + " TEXT,"
-                + VideoColumns.VIDEO_URI + " TEXT NOT NULL,"
-                + VideoColumns.THUMBNAIL_FILE_PATH + " TEXT NOT NULL,"
-                + VideoColumns.USER_ID + " TEXT NOT NULL,"
-                + "UNIQUE (" + VideoColumns.VIDEO_URI + ") ON CONFLICT REPLACE)");
+		db.execSQL("CREATE TABLE " + Tables.CONTACTS + " (" + BaseColumns._ID
+				+ " INTEGER PRIMARY KEY AUTOINCREMENT,"
+				+ ContactColumns.CONTACT_ID + " TEXT NOT NULL,"
+				+ ContactColumns.CONTACT_APPROVAL_STATUS + " TEXT NOT NULL,"
+				+ ContactColumns.CONTACT_USERNAME + " TEXT NOT NULL,"
+				+ ContactColumns.CONTACT_NAME + " TEXT,"
+				+ ContactColumns.CONTACT_LAST_POST_DATE + " DATE," + "UNIQUE ("
+				+ ContactColumns.CONTACT_ID + ") ON CONFLICT REPLACE)");
+	}
 
-        db.execSQL("CREATE TABLE " + Tables.CONTACTS + " ("
-                + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + ContactColumns.CONTACT_ID + " TEXT NOT NULL,"
-                + ContactColumns.CONTACT_APPROVAL_STATUS + " TEXT NOT NULL,"
-                + ContactColumns.CONTACT_USERNAME + " TEXT NOT NULL,"
-                + ContactColumns.CONTACT_NAME + " TEXT,"
-                + ContactColumns.CONTACT_LAST_POST_DATE + " DATE,"
-                + "UNIQUE (" + ContactColumns.CONTACT_ID + ") ON CONFLICT REPLACE)");
-    }
+	@Override
+	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+		Log.d(TAG, "onUpgrade() from " + oldVersion + " to " + newVersion);
+		Log.w(TAG, "Destroying old data during upgrade");
 
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.d(TAG, "onUpgrade() from " + oldVersion + " to " + newVersion);
-        Log.w(TAG, "Destroying old data during upgrade");
-
-        db.execSQL("DROP TABLE IF EXISTS " + Tables.VIDEOS);
-        db.execSQL("DROP TABLE IF EXISTS " + Tables.CONTACTS);
+		db.execSQL("DROP TABLE IF EXISTS " + Tables.MESSAGES);
+		db.execSQL("DROP TABLE IF EXISTS " + Tables.CONTACTS);
 
 		onCreate(db);
 	}

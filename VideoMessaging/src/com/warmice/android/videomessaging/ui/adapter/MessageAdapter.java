@@ -1,88 +1,115 @@
 package com.warmice.android.videomessaging.ui.adapter;
 
 import com.warmice.android.videomessaging.R;
-import com.warmice.android.videomessaging.provider.MessagingContract.VideoColumns;
-import com.warmice.android.videomessaging.ui.VideoActivity;
-
+import com.warmice.android.videomessaging.data.User;
+import com.warmice.android.videomessaging.provider.MessagingContract.MessageColumns;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
+import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CursorAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 public class MessageAdapter extends CursorAdapter {
+	private static final int TYPE_OUTBOUND = 0;
+	private static final int TYPE_INBOUND = 1;
 	private LayoutInflater mInflater;
-	private final int mNoteIndex;
-	private final int mDateIndex;
-	private final int mUriIndex;
-	private final int mThumbnailIndex;
+	private int mTextIndex;
+	private int mDateIndex;
+	private int mSenderIdIndex;
+	private int userId;
 
 	public MessageAdapter(Context context, Cursor c) {
 		super(context, c, false);
 		mInflater = LayoutInflater.from(context);
-		
-		mNoteIndex = c.getColumnIndex(VideoColumns.VIDEO_NOTE);
-		mDateIndex = c.getColumnIndex(VideoColumns.VIDEO_DATE);
-		mUriIndex = c.getColumnIndex(VideoColumns.VIDEO_URI);
-		mThumbnailIndex = c.getColumnIndex(VideoColumns.THUMBNAIL_FILE_PATH);
+		loadIndices();
+		userId = User.load(context).id;
+	}
+
+	private void loadIndices() {
+		Cursor cursor = getCursor();
+		if (cursor != null) {
+			mTextIndex = cursor.getColumnIndex(MessageColumns.MESSAGE_TEXT);
+			mDateIndex = cursor
+					.getColumnIndex(MessageColumns.MESSAGE_SENT_DATE);
+			mSenderIdIndex = cursor.getColumnIndex(MessageColumns.SENDER_ID);
+		}
 	}
 
 	@Override
 	public void bindView(View view, Context context, Cursor cursor) {
 		final ViewHolder holder = (ViewHolder) view.getTag();
-		final String name = cursor.getString(mNoteIndex);
+		final String name = cursor.getString(mTextIndex);
 		final String date = cursor.getString(mDateIndex);
-		final String thumbnailFilePath = cursor.getString(mThumbnailIndex);
-		Bitmap thumbnail = loadThumbnail(thumbnailFilePath);
-		
-		holder.note.setText(name);
-		holder.date.setText(date);
-		holder.thumbnail.setImageBitmap(thumbnail);
-	}
 
-	private Bitmap loadThumbnail(String thumbnailFilePath) {
-		final Bitmap thumbnail = BitmapFactory.decodeFile(thumbnailFilePath);
-		return thumbnail;
+		holder.text.setText(name);
+		holder.date.setText(date);
 	}
 
 	@Override
 	public View newView(Context context, Cursor cursor, ViewGroup parent) {
-		View view = mInflater.inflate(R.layout.list_messages_outbound, parent, false);
+		int position = cursor.getPosition();
+		switch (getItemViewType(position)) {
+		case TYPE_INBOUND:
+			return newInboundView(context, cursor, parent);
+		case TYPE_OUTBOUND:
+			return newOutboundView(context, cursor, parent);
+		default:
+			return null;
+		}
+	}
+
+	public View newOutboundView(Context context, Cursor cursor, ViewGroup parent) {
+		View view = mInflater.inflate(R.layout.list_messages_text_outbound,
+				parent, false);
 		ViewHolder holder = new ViewHolder();
 		view.setTag(holder);
-		
-		holder.note = (TextView) view.findViewById(R.id.message_note);
-		holder.date = (TextView) view.findViewById(R.id.message_date);
-		holder.thumbnail = (ImageView) view.findViewById(R.id.message_thumbnail);
-		
+
+		holder.text = (TextView) view.findViewById(R.id.message_text);
+		holder.date = (TextView) view.findViewById(R.id.message_sent_date);
+
 		return view;
 	}
-	
-	private class ViewHolder{
-		TextView note;
-		TextView date;
-		ImageView thumbnail;
+
+	public View newInboundView(Context context, Cursor cursor, ViewGroup parent) {
+		View view = mInflater.inflate(R.layout.list_messages_text_inbound,
+				parent, false);
+		ViewHolder holder = new ViewHolder();
+		view.setTag(holder);
+
+		holder.text = (TextView) view.findViewById(R.id.message_text);
+		holder.date = (TextView) view.findViewById(R.id.message_sent_date);
+
+		return view;
 	}
 
-	public Intent setupStartVideoIntent(Intent intent, int position) {
-		final Cursor c = getCursor();
-		c.moveToPosition(position);
+	@Override
+	public int getItemViewType(int position) {
+		mCursor.moveToPosition(position);
+		int senderId = mCursor.getInt(mSenderIdIndex);
+		if (senderId == userId) {
+			return TYPE_OUTBOUND;
+		} else {
+			return TYPE_INBOUND;
+		}
+	}
 
-		final String videoDate = c.getString(mDateIndex);
-		final String videoUriString = c.getString(mUriIndex);
-		final Uri videoUri = Uri.parse(videoUriString);
-		
-		intent.putExtra(VideoActivity.EXTRA_VIDEO_URI, videoUri);
-		intent.putExtra(VideoActivity.EXTRA_DATE, videoDate);
-		
-		return intent;
+	@Override
+	public int getViewTypeCount() {
+		return 2;
+	}
+
+	private class ViewHolder {
+		TextView text;
+		TextView date;
+	}
+
+	@Override
+	public Cursor swapCursor(Cursor newCursor) {
+		super.swapCursor(newCursor);
+		loadIndices();
+		return getCursor();
 	}
 
 }

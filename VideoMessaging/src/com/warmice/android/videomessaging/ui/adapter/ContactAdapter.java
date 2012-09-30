@@ -169,8 +169,13 @@ public class ContactAdapter extends CursorAdapter {
 
 	public int getContactId(int position) {
 		mCursor.moveToPosition(position);
-		int contactId = mCursor.getInt(mContactIdIndex);
+		final int contactId = mCursor.getInt(mContactIdIndex);
 		return contactId;
+	}
+
+	public String getUsername(int position) {
+		mCursor.moveToPosition(position);
+		return mCursor.getString(mUsernameIndex);
 	}
 
 }

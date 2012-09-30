@@ -32,9 +32,11 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import com.warmice.android.videomessaging.data.User;
+import com.warmice.android.videomessaging.provider.MessagingContract.MessageColumns;
 import com.warmice.android.videomessaging.provider.MessagingDatabase.Tables;
 import com.warmice.android.videomessaging.provider.MessagingContract.Contacts;
-import com.warmice.android.videomessaging.provider.MessagingContract.Videos;
+import com.warmice.android.videomessaging.provider.MessagingContract.Messages;
 import com.warmice.android.videomessaging.util.SelectionBuilder;
 
 /**
@@ -49,12 +51,12 @@ public class MessagingProvider extends ContentProvider {
 
 	private static final UriMatcher sUriMatcher = buildUriMatcher();
 
-	private static final int VIDEOS = 100;
-	private static final int VIDEO_ID = 101;
+	private static final int MESSAGES = 100;
+	private static final int MESSAGE_ID = 101;
 
 	private static final int CONTACT = 200;
 	private static final int CONTACT_ID = 201;
-	private static final int CONTACT_ID_VIDEOS = 202;
+	private static final int CONTACT_ID_MESSAGES = 202;
 
 	private static final int CLEAR_ALL = 500;
 
@@ -66,12 +68,12 @@ public class MessagingProvider extends ContentProvider {
 		final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
 		final String authority = MessagingContract.CONTENT_AUTHORITY;
 
-		matcher.addURI(authority, "videos", VIDEOS);
-		matcher.addURI(authority, "videos/*", VIDEO_ID);
+		matcher.addURI(authority, "messages", MESSAGES);
+		matcher.addURI(authority, "messages/*", MESSAGE_ID);
 
 		matcher.addURI(authority, "users", CONTACT);
 		matcher.addURI(authority, "users/*", CONTACT_ID);
-		matcher.addURI(authority, "users/*/videos", CONTACT_ID_VIDEOS);
+		matcher.addURI(authority, "users/*/messages", CONTACT_ID_MESSAGES);
 
 		matcher.addURI(authority, "clear_all", CLEAR_ALL);
 
@@ -90,16 +92,16 @@ public class MessagingProvider extends ContentProvider {
 	public String getType(Uri uri) {
 		final int match = sUriMatcher.match(uri);
 		switch (match) {
-		case VIDEOS:
-			return Videos.CONTENT_TYPE;
-		case VIDEO_ID:
-			return Videos.CONTENT_ITEM_TYPE;
+		case MESSAGES:
+			return Messages.CONTENT_TYPE;
+		case MESSAGE_ID:
+			return Messages.CONTENT_ITEM_TYPE;
 		case CONTACT:
 			return Contacts.CONTENT_TYPE;
 		case CONTACT_ID:
 			return Contacts.CONTENT_ITEM_TYPE;
-		case CONTACT_ID_VIDEOS:
-			return Videos.CONTENT_TYPE;
+		case CONTACT_ID_MESSAGES:
+			return Messages.CONTENT_TYPE;
 		default:
 			throw new UnsupportedOperationException("Unknown uri: " + uri);
 		}
@@ -123,17 +125,6 @@ public class MessagingProvider extends ContentProvider {
 				projection, sortOrder);
 		cursor.setNotificationUri(getContext().getContentResolver(), uri);
 
-		switch (match) {
-		case VIDEOS:
-		case VIDEO_ID: {
-
-		}
-		case CONTACT:
-		case CONTACT_ID:
-		case CONTACT_ID_VIDEOS: {
-		}
-
-		}
 		return cursor;
 	}
 
@@ -146,10 +137,13 @@ public class MessagingProvider extends ContentProvider {
 		final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 		final int match = sUriMatcher.match(uri);
 		switch (match) {
-		case VIDEOS: {
-			db.insertOrThrow(Tables.VIDEOS, null, values);
-			getContext().getContentResolver().notifyChange(uri, null);
-			return Videos.buildVideoUri(values.getAsString(Videos.VIDEO_URI));
+		case MESSAGES: {
+			db.insertOrThrow(Tables.MESSAGES, null, values);
+			String contactId = getContactId(values);
+			Uri updatedUri = Contacts.buildMessagesUri(contactId);
+			getContext().getContentResolver().notifyChange(updatedUri, null);
+			return Messages.buildMessageUri(values
+					.getAsString(Messages.MESSAGE_VIDEO_URI));
 		}
 		case CONTACT: {
 			db.insertOrThrow(Tables.CONTACTS, null, values);
@@ -161,6 +155,16 @@ public class MessagingProvider extends ContentProvider {
 			throw new UnsupportedOperationException("Unknown uri: " + uri);
 		}
 		}
+	}
+
+	private String getContactId(ContentValues values) {
+		String userId = Integer.toString(User.load(getContext()).id);
+		String senderId = values.getAsString(MessageColumns.SENDER_ID);
+		String receiverId = values.getAsString(MessageColumns.RECEIVER_ID);
+		if (senderId.equals(userId)) {
+			return receiverId;
+		}
+		return senderId;
 	}
 
 	/** {@inheritDoc} */
@@ -189,7 +193,7 @@ public class MessagingProvider extends ContentProvider {
 		switch (match) {
 		case CLEAR_ALL:
 			retVal += db.delete(Tables.CONTACTS, null, null);
-			retVal += db.delete(Tables.VIDEOS, null, null);
+			retVal += db.delete(Tables.MESSAGES, null, null);
 			break;
 
 		default:
@@ -234,13 +238,13 @@ public class MessagingProvider extends ContentProvider {
 		final SelectionBuilder builder = new SelectionBuilder();
 		final int match = sUriMatcher.match(uri);
 		switch (match) {
-		case VIDEOS: {
-			return builder.table(Tables.VIDEOS);
+		case MESSAGES: {
+			return builder.table(Tables.MESSAGES);
 		}
-		case VIDEO_ID: {
-			final String videoId = Videos.getVideoId(uri);
-			return builder.table(Tables.VIDEOS).where(Videos.VIDEO_URI + "=?",
-					videoId);
+		case MESSAGE_ID: {
+			final String videoId = Messages.getMessageId(uri);
+			return builder.table(Tables.MESSAGES).where(
+					Messages.MESSAGE_VIDEO_URI + "=?", videoId);
 		}
 		case CONTACT: {
 			return builder.table(Tables.CONTACTS);
@@ -250,10 +254,11 @@ public class MessagingProvider extends ContentProvider {
 			return builder.table(Tables.CONTACTS).where(
 					Contacts.CONTACT_ID + "=?", userId);
 		}
-		case CONTACT_ID_VIDEOS: {
+		case CONTACT_ID_MESSAGES: {
 			final String userId = Contacts.getUserId(uri);
-			return builder.table(Tables.VIDEOS).where(Videos.USER_ID + "=?",
-					userId);
+			return builder.table(Tables.MESSAGES)
+					.where(Messages.RECEIVER_ID + "=? OR " + Messages.SENDER_ID
+							+ "=?", userId, userId);
 		}
 		default: {
 			throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -269,13 +274,13 @@ public class MessagingProvider extends ContentProvider {
 	private SelectionBuilder buildExpandedSelection(Uri uri, int match) {
 		final SelectionBuilder builder = new SelectionBuilder();
 		switch (match) {
-		case VIDEOS: {
+		case MESSAGES: {
 			return builder.table(Tables.CONTACTS);
 		}
-		case VIDEO_ID: {
-			final String videoId = Videos.getVideoId(uri);
-			return builder.table(Tables.VIDEOS).where(Videos.VIDEO_URI + "=?",
-					videoId);
+		case MESSAGE_ID: {
+			final String videoId = Messages.getMessageId(uri);
+			return builder.table(Tables.MESSAGES).where(
+					Messages.MESSAGE_VIDEO_URI + "=?", videoId);
 		}
 		case CONTACT: {
 			return builder.table(Tables.CONTACTS);
@@ -285,10 +290,11 @@ public class MessagingProvider extends ContentProvider {
 			return builder.table(Tables.CONTACTS).where(
 					Contacts.CONTACT_ID + "=?", userId);
 		}
-		case CONTACT_ID_VIDEOS: {
+		case CONTACT_ID_MESSAGES: {
 			final String userId = Contacts.getUserId(uri);
-			return builder.table(Tables.VIDEOS).where(Videos.USER_ID + "=?",
-					userId);
+			return builder.table(Tables.MESSAGES)
+					.where(Messages.RECEIVER_ID + "=? OR " + Messages.SENDER_ID
+							+ "=?", userId, userId);
 		}
 		default: {
 			throw new UnsupportedOperationException("Unknown uri: " + uri);

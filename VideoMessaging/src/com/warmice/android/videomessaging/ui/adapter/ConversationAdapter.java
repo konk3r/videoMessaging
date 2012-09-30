@@ -66,8 +66,8 @@ public class ConversationAdapter extends CursorAdapter {
 		final String userId = c.getString(mIdIndex);
 		final String userName = c.getString(mNameIndex);
 		
-		intent.putExtra(MessagesActivity.EXTRA_USER_ID, userId);
-		intent.putExtra(MessagesActivity.EXTRA_USER_NAME, userName);
+		intent.putExtra(MessagesActivity.EXTRA_CONTACT_ID, userId);
+		intent.putExtra(MessagesActivity.EXTRA_USERNAME, userName);
 		
 		return intent;
 	}

@@ -30,7 +30,7 @@
     <dimen name="date_text_size">12sp</dimen>
     <dimen name="text_size_small">10sp</dimen>
     
-    <dimen name="message_minimum_note_height">60dp</dimen>
+    <dimen name="message_minimum_text_height">60dp</dimen>
     <dimen name="message_date_height">15dp</dimen>
     <dimen name="message_image_height">75dp</dimen>
     <dimen name="message_image_width">125dp</dimen>

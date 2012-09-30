@@ -50,7 +50,7 @@ public class Contact {
 		}
 	}
 	
-	private static void storeContacts(Context context,
+	public static void storeContacts(Context context,
 			ArrayList<Contact> contacts) {
 		Contact[] formattedContacts = contacts.toArray(new Contact[contacts
 				.size()]);

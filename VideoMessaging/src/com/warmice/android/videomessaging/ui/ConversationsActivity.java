@@ -17,22 +17,17 @@
 package com.warmice.android.videomessaging.ui;
 
 import com.warmice.android.videomessaging.R;
-import com.warmice.android.videomessaging.VideoApplication;
-import com.warmice.android.videomessaging.provider.MessagingContract.ContactColumns;
 import com.warmice.android.videomessaging.provider.MessagingContract.Contacts;
-import com.warmice.android.videomessaging.tools.DataUtils;
 import com.warmice.android.videomessaging.ui.actionbar.ActionBarActivity;
 import com.warmice.android.videomessaging.ui.adapter.ConversationAdapter;
 
 import android.app.Dialog;
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -42,7 +37,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 public class ConversationsActivity extends ActionBarActivity implements OnItemClickListener {
-	private static final String TAG = "ConversationListActivity";
 	private ListView mList;
 	private Cursor mCursor;
 	private ConversationAdapter mAdapter;
@@ -98,16 +92,6 @@ public class ConversationsActivity extends ActionBarActivity implements OnItemCl
 	private void addNewMessage() {
 		//TODO this will be changed to start a contact list activity
 		promptForUserName();
-		final ContentResolver resolver = getContentResolver();
-		final Uri uri = Contacts.CONTENT_URI;
-		final ContentValues values = new ContentValues();
-		values.put(ContactColumns.CONTACT_ID, "g-money");
-		values.put(ContactColumns.CONTACT_NAME, "La Boa");
-		values.put(ContactColumns.CONTACT_LAST_POST_DATE, DataUtils.createCurrentDate());
-		
-		final Uri userUri = resolver.insert(uri, values);
-		
-		if (VideoApplication.IS_DEBUGGABLE) Log.d(TAG, userUri.toString());
 	}
 
 	private void promptForUserName() {

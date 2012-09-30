@@ -12,38 +12,42 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-  -->
+-->
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="@dimen/message_padding" >
 
     <TextView
-        android:id="@+id/message_note"
+        android:id="@+id/message_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/message_thumbnail"
-        android:gravity="center"
-        android:minHeight="@dimen/message_minimum_note_height"
-        android:text="@string/message_note" />
-
-    <ImageView
-        android:id="@+id/message_thumbnail"
-        android:layout_width="@dimen/message_image_width"
-        android:layout_height="@dimen/message_image_height"
-        android:contentDescription="@string/video_thumbnail"
-        android:layout_centerVertical="true"
-        android:scaleType="fitXY"
-        android:src="@drawable/empty_contact" />
+        android:layout_toLeftOf="@+id/picture"
+        android:gravity="right|center"
+        android:minHeight="@dimen/message_minimum_text_height"
+        android:paddingRight="@dimen/message_padding"
+        android:text="@string/message_text" />
 
     <TextView
-        android:id="@+id/message_date"
+        android:id="@+id/message_sent_date"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/message_date_height"
-        android:layout_below="@+id/message_note"
-        android:layout_alignRight="@+id/message_note"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/message_text"
         android:gravity="center_vertical|right"
-        android:textSize="@dimen/date_text_size"
-        android:text="@string/last_message_date" />
+        android:text="@string/last_message_date"
+        android:textSize="@dimen/date_text_size" />
+
+    <ImageView
+        android:id="@+id/picture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/message_text"
+        android:layout_alignLeft="@+id/message_sent_date"
+        android:layout_alignRight="@+id/message_sent_date"
+        android:layout_alignTop="@+id/message_text"
+        android:contentDescription="@string/user_picture"
+        android:src="@drawable/empty_contact" />
 
 </RelativeLayout>

@@ -16,156 +16,116 @@
 
 package com.warmice.android.videomessaging.ui;
 
-import java.io.File;
 import com.warmice.android.videomessaging.R;
-import com.warmice.android.videomessaging.data.Video;
+import com.warmice.android.videomessaging.data.Message;
+import com.warmice.android.videomessaging.data.User;
 import com.warmice.android.videomessaging.provider.MessagingContract.Contacts;
+import com.warmice.android.videomessaging.tools.networktasks.SendMessageTask;
 import com.warmice.android.videomessaging.ui.actionbar.ActionBarActivity;
 import com.warmice.android.videomessaging.ui.adapter.MessageAdapter;
 
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
+import android.widget.EditText;
 import android.widget.ListView;
 
-public class MessagesActivity extends ActionBarActivity implements OnItemClickListener {
-	@SuppressWarnings("unused")
-	private static final String TAG = "MessagingListActivity";
+public class MessagesActivity extends ActionBarActivity implements
+		LoaderManager.LoaderCallbacks<Cursor> {
+	public final static String EXTRA_CONTACT_ID = "extra_user_id";
+	public final static String EXTRA_USERNAME = "extra_user_name";
 
-	public final static String EXTRA_USER_ID = "extra_user_id";
-	public final static String EXTRA_USER_NAME = "extra_user_name";
-	private final static int REQUEST_RECORD_VIDEO = 0;
-	
 	private ListView mList;
-	private Cursor mCursor;
 	private MessageAdapter mAdapter;
-	
-	private String mUserId;
+	private EditText mInput;
+
+	private Integer mContactId;
 	private String mUserName;
-	
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_messages);
 
-        extractContentFromBundle();
-        
-        setTitle(mUserName);
-        
-        refreshCursor();
-    	initializeList();
-    }
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		extractContentFromBundle();
+		initializeViews();
+		initializeList();
+	}
 
-	private void extractContentFromBundle() {
-        final Intent intent = getIntent();
-        final Bundle extras = intent.getExtras();
-        
-        mUserId = (String) extras.get(EXTRA_USER_ID);
-        mUserName = (String) extras.get(EXTRA_USER_NAME);
-		
+	private void initializeViews() {
+		setContentView(R.layout.activity_messages);
+		setTitle(mUserName);
+		mList = (ListView) findViewById(R.id.message_list);
+		mInput = (EditText) findViewById(R.id.input_text);
 	}
 
 	private void initializeList() {
-		mList = (ListView) findViewById(R.id.message_list);
-		mAdapter = new MessageAdapter(this, mCursor);
-		
+		mAdapter = new MessageAdapter(this, null);
 		mList.setAdapter(mAdapter);
-		mList.setOnItemClickListener(this);
+		getSupportLoaderManager().initLoader(0, null, this);
+	}
+
+	private void extractContentFromBundle() {
+		final Intent intent = getIntent();
+
+		mContactId = intent.getIntExtra(EXTRA_CONTACT_ID, 0);
+		mUserName = intent.getStringExtra(EXTRA_USERNAME);
 	}
 
 	@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.messages, menu);
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-        case R.id.record:
-        	dispatchRecordVideoIntent();
-            return true;
-        default:
-            return super.onOptionsItemSelected(item);
-        }
-    }
-
-	private void refreshCursor() {
-		final Uri videoUri = Contacts.buildVideosUri(mUserId);
-		final ContentResolver resolver = getContentResolver();
-		
-		mCursor = resolver.query(videoUri, null, null, null, null);
-	}
-
-	private void updateListAdapter() {
-		mAdapter.changeCursor(mCursor);
-	}
-
-
-	@Override
-	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		startVideoActivity(position);
-	}
-
-	private void startVideoActivity(int messagePosition) {
-		Intent intent = new Intent(this, VideoActivity.class);
-		intent = mAdapter.setupStartVideoIntent(intent, messagePosition);
-		startActivity(intent);
-	}
-
-	private void dispatchRecordVideoIntent() {
-		Intent videoCaptureIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-		Uri fileUri = buildFileUri();
-		
-		videoCaptureIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-		startActivityForResult(videoCaptureIntent, REQUEST_RECORD_VIDEO);
-	}
-
-	private Uri buildFileUri() {
-		String path = Environment.getExternalStorageDirectory().getAbsolutePath();
-		path += "/ourVideos/myVideo.mp4";
-		
-		File file = new File(path);
-		return Uri.fromFile(file);
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.messages, menu);
+		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
+	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+		Uri uri = Contacts.buildMessagesUri(mContactId.toString());
+		CursorLoader loader = new CursorLoader(this, uri, null, null, null,
+				null);
+		return loader;
+	}
+
+	@Override
+	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+		mAdapter.swapCursor(cursor);
+		mAdapter.notifyDataSetChanged();
+	}
+
+	@Override
+	public void onLoaderReset(Loader<Cursor> loader) {
+		mAdapter.swapCursor(null);
+	}
+
+	public void onClick(View view) {
+		switch (view.getId()) {
+		case R.id.send:
+			if (!fieldIsEmpty(mInput)) {
+				sendMessage();
+				mInput.setText("");
+			}
+			break;
+		}
+	}
+
+	private void sendMessage() {
+		Message message = pullNewMessageFromInput();
+		message.store(this);
 		
-		if (requestCode == REQUEST_RECORD_VIDEO) {
-			handleVideoResult(data);
-		}
+		SendMessageTask task = new SendMessageTask(this);
+		task.setMessage(message);
+		task.execute();
 	}
 
-
-	private void handleVideoResult(Intent data) {
-		if (data != null) {
-			storeUri(data);
-	        refreshCursor();
-			updateListAdapter();
-		}
+	private Message pullNewMessageFromInput() {
+		Message message = new Message();
+		message.text = getTrimmedText(mInput);
+		message.sender_id = User.load(this).id;
+		message.receiver_id = mContactId;
+		message.message_type = Message.TYPE_TEXT;
+		return message;
 	}
-
-	private void storeUri(Intent intent) {
-		final Uri returnedUri = intent.getData();
-		if (returnedUri != null) {
-			Video video = new Video(returnedUri, mUserId);
-			video.store(this);
-		}
-		
-	}
-	
-    
 }

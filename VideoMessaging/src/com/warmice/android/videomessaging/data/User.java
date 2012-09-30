@@ -14,17 +14,19 @@ public class User {
 	private static String mUserKey;
 	private static String mNameKey;
 	private static String mIdKey;
+	private static String mLastUpdateKey;
 
 	public String username;
 	public String api_key;
 	public int id;
 	public String name;
+	public String last_update;
 
 	public User() {
 	}
 
-	public void save(Context context) {
-		new SaveUserTask().execute(context);
+	public boolean isSignedIn() {
+		return username != null;
 	}
 
 	public static User load(Context context) {
@@ -34,7 +36,7 @@ public class User {
 		user.api_key = prefs.getString(mApiKey, null);
 		user.name = prefs.getString(mNameKey, null);
 		user.id = prefs.getInt(mIdKey, -1);
-
+		user.last_update = prefs.getString(mLastUpdateKey, null);
 		return user;
 	}
 
@@ -58,6 +60,7 @@ public class User {
 		mUserKey = context.getString(R.string.preference_username);
 		mNameKey = context.getString(R.string.preference_full_name);
 		mIdKey = context.getString(R.string.preference_id);
+		mLastUpdateKey = context.getString(R.string.preference_last_update);
 	}
 
 	public void signOut(Context context) {
@@ -70,10 +73,11 @@ public class User {
 		api_key = null;
 		id = -1;
 		name = null;
+		last_update = null;
 	}
 
-	public boolean isSignedIn() {
-		return username != null;
+	public void save(Context context) {
+		new SaveUserTask().execute(context);
 	}
 	
 	class SaveUserTask extends AsyncTask<Context, Void, Void>{
@@ -86,6 +90,7 @@ public class User {
 			editor.putString(mApiKey, api_key);
 			editor.putString(mNameKey, name);
 			editor.putInt(mIdKey, id);
+			editor.putString(mLastUpdateKey, last_update);
 			editor.commit();
 			
 			return null;

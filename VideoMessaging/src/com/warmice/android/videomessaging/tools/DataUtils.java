@@ -10,7 +10,7 @@ public class DataUtils {
 
 	public static String createCurrentDate() {
 		final SimpleDateFormat dateFormat = new SimpleDateFormat(
-				"yyyy-MM-dd HH:mm:ss");
+				"yyyy-MM-dd HH:mm:ss.SSS");
 		final Date date = new Date();
 		final String formattedDate = dateFormat.format(date);
 		return formattedDate;
