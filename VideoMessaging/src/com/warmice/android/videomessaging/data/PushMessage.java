@@ -1,5 +1,8 @@
 package com.warmice.android.videomessaging.data;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class PushMessage {
 	public static final String CONTACT_REQUEST = "contact_request";
 	public static final String CONTACT_ACCEPTED = "contact_accepted";

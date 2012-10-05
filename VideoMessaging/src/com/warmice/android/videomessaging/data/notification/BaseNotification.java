@@ -2,8 +2,8 @@ package com.warmice.android.videomessaging.data.notification;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 
 public abstract class BaseNotification {
@@ -27,8 +27,9 @@ public abstract class BaseNotification {
 		mNotification = new NotificationCompat.Builder(context)
 				.setContentTitle(getTitle(context))
 				.setContentText(getMessage(context))
-				.setSmallIcon(getIcon())
 				.setTicker(getTickerText(context))
+				.setSmallIcon(getIcon())
+				.setContentIntent(getIntent(context))
 				.getNotification();
 	}
 
@@ -54,7 +55,7 @@ public abstract class BaseNotification {
 
 	public abstract int getIcon();
 
-	public abstract Intent getIntent(Context context);
+	public abstract PendingIntent getIntent(Context context);
 
 	public abstract boolean hasNotifications();
 }

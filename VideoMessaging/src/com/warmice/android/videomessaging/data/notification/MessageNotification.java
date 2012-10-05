@@ -8,6 +8,7 @@ import com.warmice.android.videomessaging.data.User;
 import com.warmice.android.videomessaging.ui.ContactsActivity;
 import com.warmice.android.videomessaging.ui.MessagesActivity;
 
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 
@@ -19,7 +20,7 @@ public class MessageNotification extends BaseNotification {
 	private String mTitle;
 	private String mMessage;
 	private String mTickerText;
-	private Intent mIntent;
+	private PendingIntent mIntent;
 	
 	private Context mContext;
 
@@ -47,18 +48,18 @@ public class MessageNotification extends BaseNotification {
 	}
 
 	@Override
-	public Intent getIntent(Context context) {
+	public PendingIntent getIntent(Context context) {
 		return mIntent;
 	}
 	
 	@Override
 	public void prepare(Context context){
-		super.prepare(context);
 		mContext = context;
 		setMessage();
 		setTitle();
 		setTickerText();
 		setIntent();
+		super.prepare(context);
 	}
 	
 	private void setMessage() {
@@ -139,17 +140,17 @@ public class MessageNotification extends BaseNotification {
 	}
 
 	private void setBulkIntent() {
-		mIntent = new Intent(mContext, ContactsActivity.class);
+		Intent intent = new Intent(mContext, ContactsActivity.class);
+		mIntent = PendingIntent.getActivity(mContext, 0, intent, 0);
 	}
 
 	private void setSingleIntent() {
 		Intent intent = new Intent(mContext, MessagesActivity.class);
 		int contactId = mMessages.get(0).getContactId(mContext);
 		intent.putExtra(MessagesActivity.EXTRA_CONTACT_ID, contactId);
-		mIntent = intent;
+		mIntent = PendingIntent.getActivity(mContext, 0, intent, 0);
 	}
 	
-
 	@Override
 	public boolean hasNotifications() {
 		if (mMessages != null && mMessages.size() > 0){
@@ -157,7 +158,6 @@ public class MessageNotification extends BaseNotification {
 		}
 		return false;
 	}
-
 
 	public class Content {
 		public String id;

@@ -6,6 +6,7 @@ import com.warmice.android.videomessaging.R;
 import com.warmice.android.videomessaging.data.Contact;
 import com.warmice.android.videomessaging.ui.ContactsActivity;
 
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 
@@ -90,8 +91,9 @@ public class ContactNotification extends BaseNotification {
 	}
 
 	@Override
-	public Intent getIntent(Context context) {
-		return new Intent(context, ContactsActivity.class);
+	public PendingIntent getIntent(Context context) {
+		Intent intent = new Intent(context, ContactsActivity.class);
+		return PendingIntent.getActivity(context, 0, intent, 0);
 	}
 
 	@Override
