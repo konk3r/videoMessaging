@@ -8,7 +8,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import com.google.android.gcm.GCMRegistrar;
 import com.warmice.android.videomessaging.R;
-import com.warmice.android.videomessaging.data.User;
+import com.warmice.android.videomessaging.data.CurrentUser;
 import com.warmice.android.videomessaging.tools.networktasks.RestService.*;
 
 import android.content.Context;
@@ -65,8 +65,8 @@ public class SignInLoader extends RestLoader {
 	private void storeCredentials(String json) {
 		try {
 			final ObjectMapper mapper = new ObjectMapper();
-			final User user = mapper.readValue(json, User.class);
-			user.save(mContext);
+			final CurrentUser user = mapper.readValue(json, CurrentUser.class);
+			user.store(mContext);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

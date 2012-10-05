@@ -1,23 +1,24 @@
-package com.warmice.android.videomessaging.data;
+package com.warmice.android.videomessaging.data.notification;
 
 import java.util.ArrayList;
 
 import com.warmice.android.videomessaging.R;
+import com.warmice.android.videomessaging.data.Contact;
 import com.warmice.android.videomessaging.ui.ContactsActivity;
 
 import android.content.Context;
 import android.content.Intent;
 
-public class ContactRequestPush extends PushMessage {
+public class ContactNotification extends BaseNotification {
 
 	public Content content;
 	private ArrayList<Contact> mContacts;
 	int mType;
 
-	public ContactRequestPush() {
+	public ContactNotification() {
 	}
 
-	public ContactRequestPush(ArrayList<Contact> contacts) {
+	public ContactNotification(ArrayList<Contact> contacts) {
 		mContacts = contacts;
 		setType();
 	}
@@ -30,10 +31,8 @@ public class ContactRequestPush extends PushMessage {
 		Contact contact = mContacts.get(0);
 		if (contact.approved.equals("true")) {
 			mType = TYPE_REQUEST_ACCEPTED;
-			type = CONTACT_ACCEPTED;
 		} else if (contact.approved.equals("response_requested")) {
 			mType = TYPE_CONTACT_REQUEST;
-			type = CONTACT_REQUEST;
 		}
 	}
 

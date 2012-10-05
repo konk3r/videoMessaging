@@ -43,9 +43,9 @@ public class Update {
 		updateExistingMessages();
 		Contact.storeContacts(mContext, contacts);
 		Message.storeMessages(mContext, messages);
-		User user = User.load(mContext);
+		CurrentUser user = CurrentUser.load(mContext);
 		user.last_update = last_update;
-		user.save(mContext);
+		user.store(mContext);
 	}
 
 	public void prepareNotifications() {

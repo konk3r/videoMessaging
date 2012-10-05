@@ -2,7 +2,7 @@ package com.warmice.android.videomessaging.ui;
 
 import com.warmice.android.videomessaging.R;
 
-import com.warmice.android.videomessaging.data.User;
+import com.warmice.android.videomessaging.data.CurrentUser;
 import com.warmice.android.videomessaging.tools.networktasks.RestService.RestResponse;
 import com.warmice.android.videomessaging.tools.networktasks.SignInLoader;
 import com.warmice.android.videomessaging.ui.actionbar.ActionBarActivity;
@@ -31,7 +31,7 @@ public class SignInActivity extends ActionBarActivity implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if (User.load(this).isSignedIn()){
+		if (CurrentUser.load(this).isSignedIn()){
 			startMainActivity();
 		} else {
 			setContentView(R.layout.activity_sign_in);
@@ -66,7 +66,7 @@ public class SignInActivity extends ActionBarActivity implements
 			signInFromBundle(data);
 		}
 		
-		User user = User.load(this);
+		CurrentUser user = CurrentUser.load(this);
 		if (user.isSignedIn()) {
 			finish();
 		}

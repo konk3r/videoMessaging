@@ -32,7 +32,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import com.warmice.android.videomessaging.data.User;
+import com.warmice.android.videomessaging.data.CurrentUser;
 import com.warmice.android.videomessaging.provider.MessagingContract.MessageColumns;
 import com.warmice.android.videomessaging.provider.MessagingDatabase.Tables;
 import com.warmice.android.videomessaging.provider.MessagingContract.Contacts;
@@ -158,7 +158,7 @@ public class MessagingProvider extends ContentProvider {
 	}
 
 	private String getContactId(ContentValues values) {
-		String userId = Integer.toString(User.load(getContext()).id);
+		String userId = Integer.toString(CurrentUser.load(getContext()).id);
 		String senderId = values.getAsString(MessageColumns.SENDER_ID);
 		String receiverId = values.getAsString(MessageColumns.RECEIVER_ID);
 		if (senderId.equals(userId)) {

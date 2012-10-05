@@ -150,7 +150,7 @@ public class Message {
 	}
 
 	public int getContactId(Context context) {
-		int id = User.load(context).id;
+		int id = CurrentUser.load(context).id;
 		
 		if(sender_id == id) {
 			return receiver_id;

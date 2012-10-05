@@ -14,24 +14,53 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.OperationApplicationException;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.RemoteException;
 
-public class Contact {
+public class Contact extends User {
 	public String approved;
-	public String contact_id;
-	public String username;
-	public String name;
+	
+	public static Contact load(Context context, int id) {
+		ContentResolver resolver = context.getContentResolver();
+		
+		String selection = ContactColumns.CONTACT_ID + " =?";
+		String[] selectionArgs = {Integer.toString(id)};
+		Uri uri = Contacts.CONTENT_URI;
+		Cursor c = resolver.query(uri, null, selection, selectionArgs, null);
+		c.moveToFirst();
 
+		return build(c);
+	}
+	
+	public static Contact build(Cursor cursor){
+		Contact contact = new Contact();
+		int nameIndex = cursor.getColumnIndex(ContactColumns.CONTACT_NAME);
+		int approvedIndex = cursor.getColumnIndex(ContactColumns.CONTACT_APPROVAL_STATUS);
+		int usernameIndex = cursor.getColumnIndex(ContactColumns.CONTACT_USERNAME);
+		int idIndex = cursor.getColumnIndex(ContactColumns.CONTACT_ID);
+		
+		contact.name = cursor.getString(nameIndex);
+		contact.approved = cursor.getString(approvedIndex);
+		contact.username = cursor.getString(usernameIndex);
+		contact.id = cursor.getInt(idIndex);
+		
+		return contact;
+	}
+
+	@Override
+	public void store(Context context) {
+		new StoreContactsTask(context).execute(this);
+	}
+	
 	public static void storeContactFromJson(Context context, String json){
 		try {
 			final ObjectMapper mapper = new ObjectMapper();
 			final Contact contact = mapper.readValue(json,
 					Contact.class);
-			
-			ArrayList<Contact> contacts = new ArrayList<Contact>();
-			contacts.add(contact);
-			storeContacts(context, contacts);
+
+			new StoreContactsTask(context).execute(contact);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -95,9 +124,12 @@ public class Contact {
 
 		private ContentValues createValues(Contact contact) {
 			final ContentValues values = new ContentValues();
+			if (contact.name.equals(" ")){
+				contact.name = contact.username;
+			}
 			
 			 values.put(ContactColumns.CONTACT_APPROVAL_STATUS, contact.approved);
-			 values.put(ContactColumns.CONTACT_ID, contact.contact_id);
+			 values.put(ContactColumns.CONTACT_ID, contact.id);
 			 values.put(ContactColumns.CONTACT_NAME, contact.name);
 			 values.put(ContactColumns.CONTACT_USERNAME, contact.username);
 			

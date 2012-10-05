@@ -22,7 +22,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
 import com.warmice.android.videomessaging.BuildConfig;
-import com.warmice.android.videomessaging.data.User;
+import com.warmice.android.videomessaging.data.CurrentUser;
 
 import android.content.Context;
 import android.net.Uri;
@@ -112,7 +112,7 @@ public class RestService {
 
 	private void setupAdditionalParam() {
 		
-		User user = User.load(mContext);
+		CurrentUser user = CurrentUser.load(mContext);
 		if (user.api_key != null) {
 
 			if (mParams == null){

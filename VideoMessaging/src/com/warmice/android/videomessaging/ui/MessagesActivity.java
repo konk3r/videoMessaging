@@ -18,7 +18,7 @@ package com.warmice.android.videomessaging.ui;
 
 import com.warmice.android.videomessaging.R;
 import com.warmice.android.videomessaging.data.Message;
-import com.warmice.android.videomessaging.data.User;
+import com.warmice.android.videomessaging.data.CurrentUser;
 import com.warmice.android.videomessaging.provider.MessagingContract.Contacts;
 import com.warmice.android.videomessaging.tools.networktasks.SendMessageTask;
 import com.warmice.android.videomessaging.ui.actionbar.ActionBarActivity;
@@ -123,7 +123,7 @@ public class MessagesActivity extends ActionBarActivity implements
 	private Message pullNewMessageFromInput() {
 		Message message = new Message();
 		message.text = getTrimmedText(mInput);
-		message.sender_id = User.load(this).id;
+		message.sender_id = CurrentUser.load(this).id;
 		message.receiver_id = mContactId;
 		message.message_type = Message.TYPE_TEXT;
 		return message;

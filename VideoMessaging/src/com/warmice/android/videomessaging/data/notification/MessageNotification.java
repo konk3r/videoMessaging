@@ -1,15 +1,17 @@
-package com.warmice.android.videomessaging.data;
+package com.warmice.android.videomessaging.data.notification;
 
 import java.util.ArrayList;
 
 import com.warmice.android.videomessaging.R;
+import com.warmice.android.videomessaging.data.Message;
+import com.warmice.android.videomessaging.data.User;
 import com.warmice.android.videomessaging.ui.ContactsActivity;
 import com.warmice.android.videomessaging.ui.MessagesActivity;
 
 import android.content.Context;
 import android.content.Intent;
 
-public class MessageNewPush extends PushMessage {
+public class MessageNotification extends BaseNotification {
 
 	public Content content;
 	private ArrayList<Message> mMessages;
@@ -21,12 +23,12 @@ public class MessageNewPush extends PushMessage {
 	
 	private Context mContext;
 
-	public MessageNewPush() {
+	public MessageNotification() {
 	}
 	
-	public MessageNewPush(ArrayList<Message> messages) {
+	public MessageNotification(ArrayList<Message> messages) {
 		mMessages = messages;
-		type = MESSAGE_NEW;
+		mType = TYPE_NEW_MESSAGE;
 	}
 
 	@Override
@@ -49,7 +51,9 @@ public class MessageNewPush extends PushMessage {
 		return mIntent;
 	}
 	
-	public void setup(Context context){
+	@Override
+	public void prepare(Context context){
+		super.prepare(context);
 		mContext = context;
 		setMessage();
 		setTitle();
@@ -88,8 +92,9 @@ public class MessageNewPush extends PushMessage {
 	}
 
 	private void setSingleTitle() {
-		int senderId = mMessages.get(0).id;
-		mTitle = String.format("New message from %s", senderId);
+		int senderId = mMessages.get(0).sender_id;
+		User user = User.load(mContext, senderId);
+		mTitle = String.format("%s:", user.getName());
 	}
 
 	private void setTickerText() {

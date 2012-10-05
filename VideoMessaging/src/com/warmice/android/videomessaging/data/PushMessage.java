@@ -1,24 +1,16 @@
 package com.warmice.android.videomessaging.data;
 
-import android.content.Context;
-import android.content.Intent;
-
-public abstract class PushMessage {
+public class PushMessage {
 	public static final String CONTACT_REQUEST = "contact_request";
 	public static final String CONTACT_ACCEPTED = "contact_accepted";
 	public static final String MESSAGE_NEW = "new_message";
-	
+
+	public static final int TYPE_NOT_FOUND = -1;
 	public static final int TYPE_CONTACT_REQUEST = 0;
 	public static final int TYPE_REQUEST_ACCEPTED = 1;
 	public static final int TYPE_MESSAGE_NEW = 2;
 	
 	public String type;
-
-	public abstract String getTitle(Context context);
-	public abstract String getMessage(Context context);
-	public abstract String getTickerText(Context context);
-	public abstract int getIcon();
-	public abstract Intent getIntent(Context context);
 
 	public int getType() {
 		if (type.equals(CONTACT_REQUEST)){
@@ -28,10 +20,7 @@ public abstract class PushMessage {
 		} else if(type.equals(MESSAGE_NEW)){
 			return TYPE_MESSAGE_NEW;
 		} else {
-			return -1;
+			return TYPE_NOT_FOUND;
 		}
-	}
-	public boolean hasNotifications() {
-		return false;
 	}
 }

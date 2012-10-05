@@ -7,6 +7,7 @@ import android.annotation.SuppressLint;
 import android.app.Application;
 import android.os.StrictMode;
 
+@SuppressWarnings("unused")
 @ReportsCrashes(formKey = "dDB6WUxFamJvQVR6WlIzQ3FoLUZpa1E6MQ") 
 public class VideoApplication extends Application {
 	
@@ -14,19 +15,19 @@ public class VideoApplication extends Application {
 	@Override
     public void onCreate() {
         ACRA.init(this);
-        if (BuildConfig.DEBUG) {
-            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-                    .detectDiskReads()
-                    .detectDiskWrites()
-                    .detectNetwork()   // or .detectAll() for all detectable problems
-                    .penaltyLog()
-                    .build());
-            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
-                    .detectLeakedSqlLiteObjects()
-                    .detectLeakedClosableObjects()
-                    .penaltyLog()
-                    .build());
-        }
+//        if (BuildConfig.DEBUG) {
+//            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+//                    .detectDiskReads()
+//                    .detectDiskWrites()
+//                    .detectNetwork()   // or .detectAll() for all detectable problems
+//                    .penaltyLog()
+//                    .build());
+//            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+//                    .detectLeakedSqlLiteObjects()
+//                    .detectLeakedClosableObjects()
+//                    .penaltyLog()
+//                    .build());
+//        }
         super.onCreate();
     }
 

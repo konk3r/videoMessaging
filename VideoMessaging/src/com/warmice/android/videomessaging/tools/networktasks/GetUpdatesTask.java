@@ -6,7 +6,7 @@ import org.apache.http.message.BasicNameValuePair;
 
 import com.warmice.android.videomessaging.R;
 import com.warmice.android.videomessaging.data.Update;
-import com.warmice.android.videomessaging.data.User;
+import com.warmice.android.videomessaging.data.CurrentUser;
 
 import android.content.Context;
 
@@ -42,7 +42,7 @@ public class GetUpdatesTask extends RestTask {
 	}
 
 	private void setupAdditionalParameters() {
-		User user = User.load(mContext);
+		CurrentUser user = CurrentUser.load(mContext);
 		ArrayList<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
 		params.add(new BasicNameValuePair("updates_since", user.last_update));
 		

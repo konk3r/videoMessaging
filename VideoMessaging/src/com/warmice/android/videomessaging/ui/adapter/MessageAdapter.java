@@ -1,7 +1,7 @@
 package com.warmice.android.videomessaging.ui.adapter;
 
 import com.warmice.android.videomessaging.R;
-import com.warmice.android.videomessaging.data.User;
+import com.warmice.android.videomessaging.data.CurrentUser;
 import com.warmice.android.videomessaging.provider.MessagingContract.MessageColumns;
 import android.content.Context;
 import android.database.Cursor;
@@ -24,7 +24,7 @@ public class MessageAdapter extends CursorAdapter {
 		super(context, c, false);
 		mInflater = LayoutInflater.from(context);
 		loadIndices();
-		userId = User.load(context).id;
+		userId = CurrentUser.load(context).id;
 	}
 
 	private void loadIndices() {

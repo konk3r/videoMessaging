@@ -11,7 +11,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
 
-import com.warmice.android.videomessaging.data.User;
+import com.warmice.android.videomessaging.data.CurrentUser;
 import com.warmice.android.videomessaging.provider.MessagingContract.AuthenticatedTables;
 import com.warmice.android.videomessaging.tools.networktasks.RestService.RestResponse;
 import com.warmice.android.videomessaging.tools.networktasks.RestService.*;
@@ -20,7 +20,7 @@ public class SignOutTask extends RestTask {
 
 	Context mContext;
 	String mDeviceId;
-	User mUser;
+	CurrentUser mUser;
 	
 	public SignOutTask(Context context) {
 		super(context, HttpVerb.DELETE);
@@ -29,7 +29,7 @@ public class SignOutTask extends RestTask {
 
 	@Override
 	protected void onPreExecute() {
-		mUser = User.load(mContext);
+		mUser = CurrentUser.load(mContext);
 		
 		setupRegistrarAndUnregister();
 		setAdditionalParameters();
