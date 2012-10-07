@@ -4,7 +4,8 @@ import com.warmice.android.videomessaging.R;
 
 import com.warmice.android.videomessaging.data.CurrentUser;
 import com.warmice.android.videomessaging.tools.networktasks.RestService.RestResponse;
-import com.warmice.android.videomessaging.tools.networktasks.SignInLoader;
+import com.warmice.android.videomessaging.tools.networktasks.SignInTask;
+import com.warmice.android.videomessaging.tools.networktasks.SignInTask.SignInListener;
 import com.warmice.android.videomessaging.ui.actionbar.ActionBarActivity;
 
 import android.app.AlertDialog;
@@ -15,11 +16,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 
 public class SignInActivity extends ActionBarActivity implements
-		LoaderManager.LoaderCallbacks<RestResponse> {
+		SignInListener {
 
 	private final static int REQUEST_CREATE = 0;
 	private final static int REQUEST_SIGNED_IN = 1;
@@ -27,7 +26,7 @@ public class SignInActivity extends ActionBarActivity implements
 	EditText mUsernameField;
 	EditText mPasswordField;
 	ProgressDialog mProgressDialog;
-
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -99,7 +98,13 @@ public class SignInActivity extends ActionBarActivity implements
 	private void verifyFieldsAndSignIn() {
 		if (inputFieldsAreValid()) {
 			mProgressDialog.show();
-		    getSupportLoaderManager().initLoader(0, null, this);
+			
+			SignInTask task = new SignInTask(this, this);
+			String username = getTrimmedText(mUsernameField);
+			String password = getTrimmedText(mPasswordField);
+			task.setUsername(username);
+			task.setPassword(password);
+			task.execute();
 		}
 	}
 
@@ -115,17 +120,7 @@ public class SignInActivity extends ActionBarActivity implements
 	}
 
 	@Override
-	public Loader<RestResponse> onCreateLoader(int id, Bundle args) {
-		SignInLoader loader = new SignInLoader(this);
-		String username = getTrimmedText(mUsernameField);
-		String password = getTrimmedText(mPasswordField);
-		loader.setUsername(username);
-		loader.setPassword(password);
-		return loader;
-	}
-
-	@Override
-	public void onLoadFinished(Loader<RestResponse> loader, RestResponse response) {
+	public void onSignInResult(RestResponse response) {
 		mProgressDialog.hide();
 		if (response.actionSucceeded()) {
 			startMainActivity();
@@ -152,9 +147,4 @@ public class SignInActivity extends ActionBarActivity implements
 		AlertDialog alert = builder.create();
 		alert.show();
 	}
-
-	@Override
-	public void onLoaderReset(Loader<RestResponse> loader) {
-	}
-
 }

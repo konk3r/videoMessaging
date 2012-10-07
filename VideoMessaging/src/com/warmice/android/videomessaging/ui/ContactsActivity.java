@@ -1,18 +1,17 @@
 package com.warmice.android.videomessaging.ui;
 
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.warmice.android.videomessaging.R;
 import com.warmice.android.videomessaging.provider.MessagingContract.Contacts;
 import com.warmice.android.videomessaging.tools.ContactClickListener;
 import com.warmice.android.videomessaging.tools.networktasks.AddContactTask;
 import com.warmice.android.videomessaging.tools.networktasks.GetContactsTask;
-import com.warmice.android.videomessaging.ui.actionbar.ActionBarActivity;
 import com.warmice.android.videomessaging.ui.adapter.ContactAdapter;
 import com.warmice.android.videomessaging.ui.dialog.AddContactFragment;
 
 import android.os.Bundle;
 import android.database.Cursor;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.ListView;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.LoaderManager;
@@ -20,7 +19,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
 
-public class ContactsActivity extends ActionBarActivity implements
+public class ContactsActivity extends SlidingMenuActivity implements
 		LoaderManager.LoaderCallbacks<Cursor> {
 	
 	CursorAdapter mAdapter;
@@ -50,18 +49,17 @@ public class ContactsActivity extends ActionBarActivity implements
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.activity_contacts, menu);
+		getSupportMenuInflater().inflate(R.menu.activity_contacts, menu);
 		return true;
 	}
-
 	@Override
-	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+	public boolean onOptionsItemSelected(MenuItem item) {
 		switch(item.getItemId()){
 		case R.id.add_contact:
 			displayAddContactDialog();
 			return true;
 		default:
-			return super.onMenuItemSelected(featureId, item);
+			return super.onOptionsItemSelected(item);
 		}
 	}
 

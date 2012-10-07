@@ -19,6 +19,7 @@
     <string name="preferences">my_preferences</string>
     <string name="preference_id">id</string>
     <string name="preference_username">username</string>
+    <string name="preference_password">password</string>
     <string name="preference_api_key">api_key</string>
     <string name="preference_full_name">full_name</string>
     <string name="preference_last_update">last_update</string>

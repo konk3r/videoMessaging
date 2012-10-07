@@ -13,22 +13,32 @@ import com.warmice.android.videomessaging.tools.networktasks.RestService.*;
 
 import android.content.Context;
 
-public class SignInLoader extends RestLoader {
+public class SignInTask extends RestTask {
 
-	Context mContext;
+	private Context mContext;
+	private SignInListener mListener;
+	
+	private String mUsername;
+	private String mPassword;
 
-	String mUsername;
-	String mPassword;
-
-	public SignInLoader(Context context) {
+	public SignInTask(Context context, SignInListener listener) {
 		super(context, HttpVerb.POST);
 		mContext = context;
+		mListener = listener;
+	}
+	
+	public void setUsername(String username) {
+		mUsername = username;
+	}
+
+	public void setPassword(String password) {
+		mPassword = password;
 	}
 
 	@Override
-	protected void onStartLoading() {
+	protected void onPreExecute() {
+		super.onPreExecute();
 		setupAdditionalParameters();
-		super.onStartLoading();
 	}
 
 	private void setupAdditionalParameters() {
@@ -47,18 +57,18 @@ public class SignInLoader extends RestLoader {
 	}
 
 	@Override
-	public void deliverResult(RestResponse data) {
-		if (data.getCode() == HttpStatus.SC_OK){
+	public void onPostExecute(RestResponse response) {
+		if (response.getCode() == HttpStatus.SC_OK){
 			registerDeviceForGCM();
-			storeCredentials(data.getData());
+			storeCredentials(response.getData());
 		}
-		super.deliverResult(data);
+		mListener.onSignInResult(response);
 	}
 	
 	private void registerDeviceForGCM(){
+		final String senderId = mContext.getString(R.string.notifications_sender_id);
 		GCMRegistrar.checkDevice(mContext);
 		GCMRegistrar.checkManifest(mContext);
-		final String senderId = mContext.getString(R.string.notifications_sender_id);
 		GCMRegistrar.register(mContext, senderId);
 	}
 
@@ -66,18 +76,14 @@ public class SignInLoader extends RestLoader {
 		try {
 			final ObjectMapper mapper = new ObjectMapper();
 			final CurrentUser user = mapper.readValue(json, CurrentUser.class);
+			user.setPassword(mPassword);
 			user.store(mContext);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-
-	public void setUsername(String username) {
-		mUsername = username;
+	
+	public interface SignInListener{
+		public abstract void onSignInResult(RestResponse response);
 	}
-
-	public void setPassword(String password) {
-		mPassword = password;
-	}
-
 }

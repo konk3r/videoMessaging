@@ -60,13 +60,8 @@
         </activity>
         
         <activity
-            android:name=".ui.SlidingActivity"
+            android:name=".ui.SlidingMenuActivity"
             android:label="Another fuxin app" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <provider
