@@ -15,7 +15,16 @@
   -->
 
 <resources>
-    <color name="actionbar_title_color">#224894</color>
+    <color name="actionbar_title">#ffffffff</color>
+    <color name="actionbar_background">#ff000000</color>
+    <color name="actionbar_divider">#ff0099CC</color>
     
-    <color name="disabled_text_color">#ff808080</color>
+    <color name="disabled_text">#ff808080</color>
+    <color name="side_menu_background">#ff000000</color>
+    
+    <color name="black">#ff000000</color>
+    <color name="white">#ffffffff</color>
+    
+    <color name="pressed_blue">#880099CC</color>
+    <color name="selected_blue">#440099CC</color>
 </resources>

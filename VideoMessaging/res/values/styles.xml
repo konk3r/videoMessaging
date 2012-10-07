@@ -12,9 +12,9 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-  -->
+-->
 
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="AppTheme" parent="android:style/Theme.Light">
         <item name="android:windowTitleSize">@dimen/actionbar_compat_height</item>
@@ -29,10 +29,11 @@
     </style>
 
     <style name="ActionBarCompat">
-        <item name="android:background">#eee</item>
+        <item name="android:background">@color/actionbar_background</item>
     </style>
 
     <style name="ActionBarCompatItemBase">
+
         <!-- layout_width/height must be set in code -->
         <item name="android:scaleType">center</item>
         <item name="android:background">@drawable/actionbar_compat_item</item>
@@ -54,13 +55,37 @@
     </style>
 
     <style name="ActionBarCompatTitle" parent="style/ActionBarCompatTitleBase">
-        <item name="android:textColor">@color/actionbar_title_color</item>
+        <item name="android:textColor">@color/actionbar_title</item>
     </style>
 
-    <style name="ActionBarCompatItem" parent="style/ActionBarCompatItemBase">
+    <style name="ActionBarCompatItem" parent="style/ActionBarCompatItemBase"></style>
+
+    <style name="ActionBarCompatHomeItem" parent="style/ActionBarCompatItemBase"></style>
+
+    <style name="SideMenuItem">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:layout_marginRight">10dp</item>
     </style>
 
-    <style name="ActionBarCompatHomeItem" parent="style/ActionBarCompatItemBase">
+    <style name="Divider" parent="style/SideMenuItem">
+        <item name="android:layout_height">2px</item>
+        <item name="android:background">@drawable/divider</item>
+    </style>
+
+    <style name="HeaderDivider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">2px</item>
+        <item name="android:background">@color/actionbar_divider</item>
+    </style>
+
+    <style name="SideMenuButton" parent="style/SideMenuItem">
+        <item name="android:layout_height">@dimen/actionbar_compat_height</item>
+        <item name="android:background">@drawable/menu_button</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:onClick">onSideMenuItemSelected</item>
     </style>
 
 </resources>

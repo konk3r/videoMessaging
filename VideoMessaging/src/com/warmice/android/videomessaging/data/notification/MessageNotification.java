@@ -94,7 +94,7 @@ public class MessageNotification extends BaseNotification {
 
 	private void setSingleTitle() {
 		int senderId = mMessages.get(0).sender_id;
-		User user = User.load(mContext, senderId);
+		User user = getUser(mContext, senderId);
 		mTitle = String.format("%s:", user.getName());
 	}
 
@@ -111,7 +111,10 @@ public class MessageNotification extends BaseNotification {
 	}
 
 	private void setSingleTickerText() {
-		mTickerText = mMessages.get(0).text;
+		int senderId = mMessages.get(0).sender_id;
+		String message = mMessages.get(0).text;
+		String name = getUser(mContext, senderId).getName();
+		mTickerText = String.format("%s: %s", name, message);
 	}
 
 	@Override

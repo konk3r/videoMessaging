@@ -1,5 +1,7 @@
 package com.warmice.android.videomessaging.data.notification;
 
+import com.warmice.android.videomessaging.data.User;
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -17,6 +19,8 @@ public abstract class BaseNotification {
 
 	protected int mType;
 	protected Notification mNotification;
+	
+	protected User mUser;
 
 	public void prepare(Context context) {
 		createNotification(context);
@@ -40,11 +44,19 @@ public abstract class BaseNotification {
 		mNotification.flags |= Notification.FLAG_AUTO_CANCEL;
 	}
 
-	public void send(Context mContext) {
+	public void send(Context context) {
 		String ns = Context.NOTIFICATION_SERVICE;
-		NotificationManager notificationManager = (NotificationManager) mContext
+		NotificationManager notificationManager = (NotificationManager) context
 				.getSystemService(ns);
 		notificationManager.notify(mType, mNotification);
+	}
+
+	protected User getUser(Context context, int senderId) {
+		if (mUser != null && mUser.id == senderId){
+			return mUser;
+		}
+		mUser = User.load(context, senderId);
+		return mUser;
 	}
 
 	public abstract String getTitle(Context context);

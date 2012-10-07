@@ -28,7 +28,7 @@
     </style>
 
     <style name="ActionBarTitle">
-        <item name="android:textColor">@color/actionbar_title_color</item>
+        <item name="android:textColor">@color/actionbar_title</item>
     </style>
 
 </resources>

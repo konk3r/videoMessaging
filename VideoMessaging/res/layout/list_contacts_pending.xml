@@ -34,7 +34,7 @@
         android:layout_toRightOf="@+id/contact_image"
         android:gravity="center"
         android:text="@string/contact_name"
-        android:textColor="@color/disabled_text_color"
+        android:textColor="@color/disabled_text"
         android:textStyle="bold" />
 
     <TextView
@@ -46,7 +46,7 @@
         android:layout_toRightOf="@+id/contact_image"
         android:gravity="right|center_vertical"
         android:text="@string/pending_approval"
-        android:textColor="@color/disabled_text_color"
+        android:textColor="@color/disabled_text"
         android:textSize="@dimen/text_size_small" />
 
 </RelativeLayout>

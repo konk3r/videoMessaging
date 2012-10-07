@@ -8,6 +8,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 
 public class CurrentUser extends User {
+	private static CurrentUser mUser;
 
 	private static String mPrefKey;
 	private static String mApiKey;
@@ -27,14 +28,22 @@ public class CurrentUser extends User {
 	}
 
 	public static CurrentUser load(Context context) {
+		if(mUser == null){
+			loadUser(context);
+		}
+		
+		return mUser;
+	}
+	
+	private static CurrentUser loadUser(Context context){
 		SharedPreferences prefs = getPreferences(context);
-		CurrentUser user = new CurrentUser();
-		user.username = prefs.getString(mUserKey, null);
-		user.api_key = prefs.getString(mApiKey, null);
-		user.name = prefs.getString(mNameKey, null);
-		user.id = prefs.getInt(mIdKey, -1);
-		user.last_update = prefs.getString(mLastUpdateKey, null);
-		return user;
+		mUser = new CurrentUser();
+		mUser.username = prefs.getString(mUserKey, null);
+		mUser.api_key = prefs.getString(mApiKey, null);
+		mUser.name = prefs.getString(mNameKey, null);
+		mUser.id = prefs.getInt(mIdKey, -1);
+		mUser.last_update = prefs.getString(mLastUpdateKey, null);
+		return mUser;
 	}
 
 	private static Editor getEditor(Context context) {
@@ -75,6 +84,11 @@ public class CurrentUser extends User {
 
 	public void store(Context context) {
 		new SaveUserTask().execute(context);
+		if (isSignedIn()){
+			mUser = this;
+		} else {
+			mUser = null;
+		}
 	}
 	
 	class SaveUserTask extends AsyncTask<Context, Void, Void>{
