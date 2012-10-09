@@ -2,10 +2,10 @@ package com.warmice.android.videomessaging.ui;
 
 import org.apache.http.HttpStatus;
 
+import com.actionbarsherlock.view.Menu;
 import com.warmice.android.videomessaging.R;
 import com.warmice.android.videomessaging.tools.networktasks.CreateAccountLoader;
 import com.warmice.android.videomessaging.tools.networktasks.RestService.RestResponse;
-import com.warmice.android.videomessaging.ui.actionbar.ActionBarActivity;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -14,11 +14,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 
-public class CreateAccountActivity extends ActionBarActivity implements
+public class CreateAccountActivity extends BaseActivity implements
 		LoaderManager.LoaderCallbacks<RestResponse> {
 
 	private EditText mUsernameField;
@@ -52,7 +51,7 @@ public class CreateAccountActivity extends ActionBarActivity implements
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.activity_create_account, menu);
+		getSupportMenuInflater().inflate(R.menu.activity_create_account, menu);
 		return true;
 	}
 

@@ -1,8 +1,4 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/sign_out"
-        android:title="@string/menu_sign_out"
-        android:orderInCategory="200"
-        android:showAsAction="never" />
     <item android:id="@+id/add_contact"
         android:title="@string/menu_add_contact"
         android:icon="@drawable/ic_action_add_contact"

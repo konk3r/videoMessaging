@@ -16,7 +16,7 @@
 
 <resources>
 
-    <string name="title_activity_contacts">Add Contact</string>
+    <string name="title_activity_contacts">Contacts</string>
     <string name="title_add_contact">Enter contact\'s username: </string>
     <string name="pending_approval">Pending approval&#8230;</string>
     <string name="tap_to_respond">Tap to respond</string>

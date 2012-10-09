@@ -31,7 +31,6 @@ public class CurrentUser extends User {
 		if (mUser == null) {
 			loadUser(context);
 		}
-
 		return mUser;
 	}
 
@@ -107,8 +106,6 @@ public class CurrentUser extends User {
 		new SaveUserTask().execute(context);
 		if (isSignedIn()) {
 			mUser = this;
-		} else {
-			mUser = null;
 		}
 	}
 

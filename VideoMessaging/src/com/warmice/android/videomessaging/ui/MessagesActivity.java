@@ -16,27 +16,29 @@
 
 package com.warmice.android.videomessaging.ui;
 
+import com.actionbarsherlock.view.Menu;
 import com.warmice.android.videomessaging.R;
 import com.warmice.android.videomessaging.data.Message;
 import com.warmice.android.videomessaging.data.CurrentUser;
+import com.warmice.android.videomessaging.file.image.FileImage;
+import com.warmice.android.videomessaging.file.image.Image;
 import com.warmice.android.videomessaging.provider.MessagingContract.Contacts;
 import com.warmice.android.videomessaging.tools.networktasks.SendMessageTask;
-import com.warmice.android.videomessaging.ui.actionbar.ActionBarActivity;
 import com.warmice.android.videomessaging.ui.adapter.MessageAdapter;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 
-public class MessagesActivity extends ActionBarActivity implements
+public class MessagesActivity extends SlidingMenuActivity implements
 		LoaderManager.LoaderCallbacks<Cursor> {
 	public final static String EXTRA_CONTACT_ID = "extra_user_id";
 	public final static String EXTRA_USERNAME = "extra_user_name";
@@ -53,6 +55,15 @@ public class MessagesActivity extends ActionBarActivity implements
 		extractContentFromBundle();
 		initializeViews();
 		initializeList();
+		loadIcons();
+	}
+
+	private void loadIcons() {
+		Image image = new FileImage(getApplicationContext());
+		image.setDimens(64, 64);
+		image.load();
+		Bitmap userBitmap = image.getBitmap();
+		mAdapter.setUserIcon(userBitmap);
 	}
 
 	private void initializeViews() {
@@ -77,7 +88,7 @@ public class MessagesActivity extends ActionBarActivity implements
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.messages, menu);
+		getSupportMenuInflater().inflate(R.menu.messages, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
 

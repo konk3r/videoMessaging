@@ -16,9 +16,11 @@
 
 package com.warmice.android.videomessaging.ui;
 
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.warmice.android.videomessaging.R;
 import com.warmice.android.videomessaging.provider.MessagingContract.Contacts;
-import com.warmice.android.videomessaging.ui.actionbar.ActionBarActivity;
 import com.warmice.android.videomessaging.ui.adapter.ConversationAdapter;
 
 import android.app.Dialog;
@@ -28,15 +30,12 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-public class ConversationsActivity extends ActionBarActivity implements OnItemClickListener {
+public class ConversationsActivity extends SherlockActivity implements OnItemClickListener {
 	private ListView mList;
 	private Cursor mCursor;
 	private ConversationAdapter mAdapter;
@@ -66,8 +65,7 @@ public class ConversationsActivity extends ActionBarActivity implements OnItemCl
 
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.conversations, menu);
+        getSupportMenuInflater().inflate(R.menu.conversations, menu);
 
         return super.onCreateOptionsMenu(menu);
     }

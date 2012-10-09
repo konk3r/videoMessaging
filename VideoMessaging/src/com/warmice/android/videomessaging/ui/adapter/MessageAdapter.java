@@ -5,10 +5,12 @@ import com.warmice.android.videomessaging.data.CurrentUser;
 import com.warmice.android.videomessaging.provider.MessagingContract.MessageColumns;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class MessageAdapter extends CursorAdapter {
@@ -19,6 +21,7 @@ public class MessageAdapter extends CursorAdapter {
 	private int mDateIndex;
 	private int mSenderIdIndex;
 	private int userId;
+	private Bitmap mUserBitmap;
 
 	public MessageAdapter(Context context, Cursor c) {
 		super(context, c, false);
@@ -40,11 +43,25 @@ public class MessageAdapter extends CursorAdapter {
 	@Override
 	public void bindView(View view, Context context, Cursor cursor) {
 		final ViewHolder holder = (ViewHolder) view.getTag();
+		final int pos = cursor.getPosition();
 		final String name = cursor.getString(mTextIndex);
 		final String date = cursor.getString(mDateIndex);
 
 		holder.text.setText(name);
 		holder.date.setText(date);
+		bindImage(holder, pos);
+	}
+
+	private void bindImage(ViewHolder holder, int pos) {
+		switch (getItemViewType(pos)) {
+		case TYPE_OUTBOUND:
+			if (mUserBitmap != null) {
+				holder.icon.setImageBitmap(mUserBitmap);
+			}
+			break;
+		case TYPE_INBOUND:
+			break;
+		}
 	}
 
 	@Override
@@ -68,6 +85,7 @@ public class MessageAdapter extends CursorAdapter {
 
 		holder.text = (TextView) view.findViewById(R.id.message_text);
 		holder.date = (TextView) view.findViewById(R.id.message_sent_date);
+		holder.icon = (ImageView) view.findViewById(R.id.photo);
 
 		return view;
 	}
@@ -80,6 +98,7 @@ public class MessageAdapter extends CursorAdapter {
 
 		holder.text = (TextView) view.findViewById(R.id.message_text);
 		holder.date = (TextView) view.findViewById(R.id.message_sent_date);
+		holder.icon = (ImageView) view.findViewById(R.id.photo);
 
 		return view;
 	}
@@ -103,6 +122,7 @@ public class MessageAdapter extends CursorAdapter {
 	private class ViewHolder {
 		TextView text;
 		TextView date;
+		ImageView icon;
 	}
 
 	@Override
@@ -110,6 +130,10 @@ public class MessageAdapter extends CursorAdapter {
 		super.swapCursor(newCursor);
 		loadIndices();
 		return getCursor();
+	}
+
+	public void setUserIcon(Bitmap userBitmap) {
+		mUserBitmap = userBitmap;
 	}
 
 }

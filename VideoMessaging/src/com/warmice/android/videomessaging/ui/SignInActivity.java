@@ -1,23 +1,22 @@
 package com.warmice.android.videomessaging.ui;
 
+import com.actionbarsherlock.view.Menu;
 import com.warmice.android.videomessaging.R;
 
 import com.warmice.android.videomessaging.data.CurrentUser;
 import com.warmice.android.videomessaging.tools.networktasks.RestService.RestResponse;
 import com.warmice.android.videomessaging.tools.networktasks.SignInTask;
 import com.warmice.android.videomessaging.tools.networktasks.SignInTask.SignInListener;
-import com.warmice.android.videomessaging.ui.actionbar.ActionBarActivity;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 
-public class SignInActivity extends ActionBarActivity implements
+public class SignInActivity extends BaseActivity implements
 		SignInListener {
 
 	private final static int REQUEST_CREATE = 0;
@@ -53,7 +52,7 @@ public class SignInActivity extends ActionBarActivity implements
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.activity_sign_in, menu);
+		getSupportMenuInflater().inflate(R.menu.activity_sign_in, menu);
 		return true;
 	}
 

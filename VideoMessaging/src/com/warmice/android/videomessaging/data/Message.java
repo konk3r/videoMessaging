@@ -18,7 +18,7 @@ import android.os.RemoteException;
 import com.warmice.android.videomessaging.provider.MessagingContract;
 import com.warmice.android.videomessaging.provider.MessagingContract.MessageColumns;
 import com.warmice.android.videomessaging.provider.MessagingContract.Messages;
-import com.warmice.android.videomessaging.tools.DataUtils;
+import com.warmice.android.videomessaging.tools.DateUtils;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Message {
@@ -36,7 +36,7 @@ public class Message {
 	private ContentValues mValues;
 
 	public Message() {
-		sent_at = DataUtils.createCurrentDate();
+		sent_at = DateUtils.createCurrentDate();
 	}
 
 	public boolean update(Context context) {

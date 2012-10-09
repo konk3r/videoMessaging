@@ -20,11 +20,13 @@
     <color name="actionbar_divider">#ff0099CC</color>
     
     <color name="disabled_text">#ff808080</color>
-    <color name="side_menu_background">#ff000000</color>
+    <color name="side_menu_background">#ffffffff</color>
     
     <color name="black">#ff000000</color>
     <color name="white">#ffffffff</color>
     
     <color name="pressed_blue">#880099CC</color>
     <color name="selected_blue">#440099CC</color>
+    
+    <color name="divider">#ff373C42</color>
 </resources>

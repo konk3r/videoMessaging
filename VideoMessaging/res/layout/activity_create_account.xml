@@ -1,114 +1,109 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="wrap_content" >
 
-    <RelativeLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="match_parent"
+        android:layout_above="@+id/horizontal_divider"
+        android:paddingBottom="30dp" >
 
-        <TextView
-            android:id="@+id/username"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
-            android:text="@string/account_username" />
+            android:gravity="center_horizontal"
+            android:orientation="vertical" >
 
-        <EditText
-            android:inputType="text"
-            android:id="@+id/username_input"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/username"
-            android:layout_centerHorizontal="true"
-            android:ems="10" >
+            <TextView
+                android:id="@+id/username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/account_username" />
 
-            <requestFocus />
-        </EditText>
+            <EditText
+                android:id="@+id/username_input"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="text" >
 
-        <TextView
-            android:id="@+id/first_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/username_input"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="30dp"
-            android:text="@string/account_first_name" />
+                <requestFocus />
+            </EditText>
 
-        <EditText
-            android:id="@+id/first_name_input"
-            android:layout_width="wrap_content"
-            android:inputType="text"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/first_name"
-            android:layout_centerHorizontal="true"
-            android:ems="10" />
+            <TextView
+                android:id="@+id/first_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="@string/account_first_name" />
 
-        <TextView
-            android:id="@+id/last_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/first_name_input"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="30dp"
-            android:text="@string/account_last_name" />
+            <EditText
+                android:id="@+id/first_name_input"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="text" />
 
-        <EditText
-            android:id="@+id/last_name_input"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:inputType="text"
-            android:layout_below="@+id/last_name"
-            android:layout_centerHorizontal="true"
-            android:ems="10" />
+            <TextView
+                android:id="@+id/last_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="@string/account_last_name" />
 
-        <TextView
-            android:id="@+id/password"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/last_name_input"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="30dp"
-            android:text="@string/account_password" />
+            <EditText
+                android:id="@+id/last_name_input"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="text" />
 
-        <EditText
-            android:id="@+id/password_input"
-            android:inputType="textPassword"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/password"
-            android:layout_centerHorizontal="true"
-            android:ems="10" />
+            <TextView
+                android:id="@+id/password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="@string/account_password" />
 
-        <TextView
-            android:id="@+id/password_confirmation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/password_input"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="30dp"
-            android:text="@string/account_confirm_password" />
+            <EditText
+                android:id="@+id/password_input"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPassword" />
 
-        <EditText
-            android:id="@+id/password_confirmation_input"
-            android:inputType="textPassword"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/password_confirmation"
-            android:layout_centerHorizontal="true"
-            android:ems="10" />
+            <TextView
+                android:id="@+id/password_confirmation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:text="@string/account_confirm_password" />
 
-        <Button
-            android:id="@+id/create_account"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/password_confirmation_input"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="30dp"
-            android:onClick="onClick"
-            android:text="@string/create_account" />
-    </RelativeLayout>
+            <EditText
+                android:id="@+id/password_confirmation_input"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPassword" />
+        </LinearLayout>
+    </ScrollView>
 
-</ScrollView>
+    <View
+        android:id="@+id/horizontal_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@+id/create_account"
+        android:background="@color/divider" />
+
+    <Button
+        android:id="@+id/create_account"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/borderless_button"
+        android:onClick="onClick"
+        android:text="@string/create_account" />
+
+</RelativeLayout>

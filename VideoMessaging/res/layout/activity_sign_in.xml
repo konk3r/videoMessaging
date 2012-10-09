@@ -1,58 +1,81 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="wrap_content" >
 
-    <RelativeLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="match_parent"
+        android:layout_above="@+id/horizontal_divider"
+        android:paddingBottom="30dp" >
 
-        <EditText
-            android:id="@+id/username"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="70dp"
-            android:ems="10"
-            android:gravity="center"
-            android:hint="@string/username"
-            android:inputType="text" >
+            android:gravity="center_horizontal"
+            android:orientation="vertical" >
 
-            <requestFocus />
-        </EditText>
+            <EditText
+                android:id="@+id/username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:ems="10"
+                android:gravity="center"
+                android:hint="@string/username"
+                android:inputType="text" >
 
-        <EditText
-            android:id="@+id/password"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/username"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="60dp"
-            android:ems="10"
-            android:gravity="center"
-            android:hint="@string/password"
-            android:inputType="textPassword" />
+                <requestFocus />
+            </EditText>
 
-        <Button
-            android:id="@+id/sign_in"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/password"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="30dp"
-            android:onClick="onClick"
-            android:text="@string/sign_in" />
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="60dp"
+                android:ems="10"
+                android:gravity="center"
+                android:hint="@string/password"
+                android:inputType="textPassword" />
+        </LinearLayout>
+    </ScrollView>
 
-        <Button
-            android:id="@+id/create_account"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/sign_in"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
-            android:onClick="onClick"
-            android:text="@string/create_account" />
-    </RelativeLayout>
+    <View
+        android:id="@+id/horizontal_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@+id/vertical_divider"
+        android:background="@color/divider" />
 
-</ScrollView>
+    <View
+        android:id="@+id/vertical_divider"
+        android:layout_width="1dp"
+        android:layout_height="30dp"
+        android:layout_alignTop="@+id/create_account"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="9dp"
+        android:background="@color/divider" />
+
+    <Button
+        android:id="@+id/create_account"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/vertical_divider"
+        android:background="@drawable/borderless_button"
+        android:onClick="onClick"
+        android:text="@string/create_account" />
+
+    <Button
+        android:id="@+id/sign_in"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@+id/vertical_divider"
+        android:background="@drawable/borderless_button"
+        android:onClick="onClick"
+        android:text="@string/sign_in" />
+
+</RelativeLayout>

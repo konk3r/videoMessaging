@@ -16,16 +16,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="AppTheme" parent="android:style/Theme.Light">
-        <item name="android:windowTitleSize">@dimen/actionbar_compat_height</item>
-        <item name="android:windowTitleBackgroundStyle">@style/ActionBarCompat</item>
-        <item name="android:windowContentOverlay">@drawable/actionbar_shadow</item>
-
-        <!-- for programmatic instantiation -->
-        <item name="actionbarCompatTitleStyle">@style/ActionBarCompatTitle</item>
-        <item name="actionbarCompatItemStyle">@style/ActionBarCompatItem</item>
-        <item name="actionbarCompatItemHomeStyle">@style/ActionBarCompatHomeItem</item>
-        <item name="actionbarCompatProgressIndicatorStyle">@style/ActionBarCompatProgressIndicator</item>
+    <style name="AppTheme" parent="Theme.Sherlock.Light.DarkActionBar">
     </style>
 
     <style name="ActionBarCompat">
@@ -62,14 +53,12 @@
 
     <style name="ActionBarCompatHomeItem" parent="style/ActionBarCompatItemBase"></style>
 
-    <style name="SideMenuItem">
-        <item name="android:layout_width">match_parent</item>
+
+    <style name="Divider">
         <item name="android:layout_marginLeft">10dp</item>
         <item name="android:layout_marginRight">10dp</item>
-    </style>
-
-    <style name="Divider" parent="style/SideMenuItem">
-        <item name="android:layout_height">2px</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1px</item>
         <item name="android:background">@drawable/divider</item>
     </style>
 
@@ -79,12 +68,11 @@
         <item name="android:background">@color/actionbar_divider</item>
     </style>
 
-    <style name="SideMenuButton" parent="style/SideMenuItem">
+    <style name="SideMenuButton">
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/actionbar_compat_height</item>
-        <item name="android:background">@drawable/menu_button</item>
+        <item name="android:background">@drawable/borderless_button</item>
         <item name="android:gravity">center</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textStyle">bold</item>
         <item name="android:onClick">onSideMenuItemSelected</item>
     </style>
 

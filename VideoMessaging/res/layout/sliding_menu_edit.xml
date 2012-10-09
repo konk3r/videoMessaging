@@ -36,7 +36,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/sign_out_divider"
+        android:layout_above="@+id/save_divider"
         android:layout_below="@+id/actionbar_divider" >
 
         <LinearLayout
@@ -46,51 +46,65 @@
             android:orientation="vertical" >
 
             <TextView
-                android:padding="5dp"
                 android:id="@+id/username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textSize="25sp" />
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/photo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/user_picture"
+                android:onClick="onSideMenuItemSelected"
                 android:src="@drawable/empty_contact" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="@string/menu_full_name"
+                android:text="@string/menu_first_name"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/name"
+            <EditText
+                android:id="@+id/first_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center" />
+                android:gravity="center"
+                android:inputType="text" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/menu_last_name"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/last_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:inputType="text" />
 
             <Button
-                android:layout_marginTop="20dp"
-                android:id="@+id/edit"
-                android:textStyle="bold"
+                android:id="@+id/change_password"
                 style="@style/SideMenuButton"
-                android:text="@string/menu_edit" />
+                android:textStyle="bold"
+                android:text="@string/menu_change_password" />
         </LinearLayout>
     </ScrollView>
 
     <View
-        android:id="@+id/sign_out_divider"
+        android:id="@+id/save_divider"
         style="@style/Divider"
-        android:layout_above="@+id/sign_out" />
+        android:layout_above="@+id/save" />
 
     <Button
-        android:id="@+id/sign_out"
+        android:id="@+id/save"
         style="@style/SideMenuButton"
         android:layout_alignParentBottom="true"
-        android:text="@string/menu_sign_out" />
+        android:text="@string/menu_save" />
 
 </RelativeLayout>

@@ -23,7 +23,7 @@
         android:id="@+id/message_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@+id/picture"
+        android:layout_toLeftOf="@+id/photo"
         android:gravity="right|center"
         android:minHeight="@dimen/message_minimum_text_height"
         android:paddingRight="@dimen/message_padding"
@@ -40,7 +40,7 @@
         android:textSize="@dimen/date_text_size" />
 
     <ImageView
-        android:id="@+id/picture"
+        android:id="@+id/photo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/message_text"
