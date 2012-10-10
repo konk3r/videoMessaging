@@ -1,15 +1,11 @@
 package com.warmice.android.videomessaging.ui.widget;
 
-import java.io.InputStream;
-
 import com.warmice.android.videomessaging.R;
 import com.warmice.android.videomessaging.file.image.ResourceImage;
 
 import android.annotation.SuppressLint;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -20,7 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 public class CropImageView extends ViewGroup {
-	
+
 	final int photoHeight = 256;
 	final int photoWidth = 256;
 
@@ -78,9 +74,9 @@ public class CropImageView extends ViewGroup {
 
 			if (heightRatio < widthRatio) {
 				height = width * backgroundHeight / backgroundWidth;
-			} else if(heightRatio > widthRatio) {
+			} else if (heightRatio > widthRatio) {
 				width = height * backgroundWidth / backgroundHeight;
-			} else{
+			} else {
 				if (width < height) {
 					height = width * backgroundHeight / backgroundWidth;
 				} else {
@@ -119,20 +115,18 @@ public class CropImageView extends ViewGroup {
 		final int parentLeft = paddingLeft;
 		final int parentTop = paddingTop;
 
-		final int count = getChildCount();
+		final int width = mSelector.getMeasuredWidth();
+		final int height = mSelector.getMeasuredHeight();
 
-		for (int i = 0; i < count; i++) {
-			final View child = getChildAt(i);
+		mSelector.calculateOffsets(parentLeft, parentTop, parentLeft + width, parentTop + height);
+		final int horizontalOffset = mSelector.getHorizontalOffset();
+		final int verticalOffset = mSelector.getVerticalOffset();
 
-			final int width = child.getMeasuredWidth();
-			final int height = child.getMeasuredHeight();
+		int childLeft = parentLeft + horizontalOffset;
+		int childTop = parentTop + verticalOffset;
 
-			int childLeft = parentLeft;
-			int childTop = parentTop;
-
-			child.layout(childLeft, childTop, childLeft + width, childTop
-					+ height);
-		}
+		mSelector.layout(childLeft, childTop, childLeft + width, childTop
+				+ height);
 	}
 
 	@Override
@@ -140,7 +134,6 @@ public class CropImageView extends ViewGroup {
 		switch (event.getActionMasked()) {
 		case MotionEvent.ACTION_DOWN:
 			mSelector.setCenter(event.getX(), event.getY());
-			mSelector.invalidate();
 			requestLayout();
 			return true;
 		case MotionEvent.ACTION_MOVE:
@@ -202,9 +195,15 @@ public class CropImageView extends ViewGroup {
 		int x = mSelector.x * bitmapWidth / selectorWidth;
 		int y = mSelector.y * bitmapHeight / selectorHeight;
 		int length = Math.min(bitmapWidth, bitmapHeight);
-		Bitmap bitmap = Bitmap.createBitmap(mBitmap, x, y,
-				length, length);
-		bitmap = Bitmap.createScaledBitmap(bitmap, photoWidth, photoHeight, true);
+		if (x < 0) {
+			x = 0;
+		}
+		if (y < 0) {
+			y = 0;
+		}
+		Bitmap bitmap = Bitmap.createBitmap(mBitmap, x, y, length, length);
+		bitmap = Bitmap.createScaledBitmap(bitmap, photoWidth, photoHeight,
+				true);
 		return bitmap;
 	}
 
@@ -263,12 +262,17 @@ public class CropImageView extends ViewGroup {
 			}
 		}
 
-		@Override
-		public void layout(int l, int t, int r, int b) {
-			setHorizontalAdjustment(l, r);
-			setVerticalAdjustment(t, b);
+		public void calculateOffsets(int left, int top, int right, int bottom) {
+			setHorizontalAdjustment(left, right);
+			setVerticalAdjustment(top, bottom);
+		}
 
-			super.layout(l + x, t + y, r + x, b + y);
+		public int getHorizontalOffset() {
+			return x;
+		}
+
+		public int getVerticalOffset() {
+			return y;
 		}
 
 		private void setHorizontalAdjustment(int l, int r) {
