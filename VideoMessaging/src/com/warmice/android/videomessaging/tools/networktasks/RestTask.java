@@ -1,7 +1,10 @@
 package com.warmice.android.videomessaging.tools.networktasks;
 
 import java.util.ArrayList;
-import org.apache.http.message.BasicNameValuePair;
+
+import ch.boye.httpclientandroidlib.entity.mime.MultipartEntity;
+import ch.boye.httpclientandroidlib.message.BasicNameValuePair;
+
 import com.warmice.android.videomessaging.tools.networktasks.RestService.*;
 
 import android.content.Context;
@@ -27,6 +30,10 @@ public class RestTask extends AsyncTask<Void, Void, RestResponse> {
 
 	protected void setParams(ArrayList<BasicNameValuePair> params) {
 		mRestService.setParams(params);
+	}
+	
+	protected void setEntity(MultipartEntity entity){
+		mRestService.setEntity(entity);
 	}
 
 	@Override

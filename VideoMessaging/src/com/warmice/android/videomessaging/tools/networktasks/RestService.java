@@ -5,21 +5,25 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.ParseException;
-import org.apache.http.StatusLine;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
+
+import ch.boye.httpclientandroidlib.HttpEntity;
+import ch.boye.httpclientandroidlib.HttpResponse;
+import ch.boye.httpclientandroidlib.HttpStatus;
+import ch.boye.httpclientandroidlib.ParseException;
+import ch.boye.httpclientandroidlib.StatusLine;
+import ch.boye.httpclientandroidlib.client.HttpClient;
+import ch.boye.httpclientandroidlib.client.entity.UrlEncodedFormEntity;
+import ch.boye.httpclientandroidlib.client.methods.HttpDelete;
+import ch.boye.httpclientandroidlib.client.methods.HttpEntityEnclosingRequestBase;
+import ch.boye.httpclientandroidlib.client.methods.HttpGet;
+import ch.boye.httpclientandroidlib.client.methods.HttpPost;
+import ch.boye.httpclientandroidlib.client.methods.HttpPut;
+import ch.boye.httpclientandroidlib.client.methods.HttpRequestBase;
+import ch.boye.httpclientandroidlib.entity.mime.MultipartEntity;
+import ch.boye.httpclientandroidlib.entity.mime.content.StringBody;
+import ch.boye.httpclientandroidlib.impl.client.DefaultHttpClient;
+import ch.boye.httpclientandroidlib.message.BasicNameValuePair;
+import ch.boye.httpclientandroidlib.util.EntityUtils;
 
 import com.warmice.android.videomessaging.BuildConfig;
 import com.warmice.android.videomessaging.data.CurrentUser;
@@ -63,26 +67,27 @@ public class RestService {
 	}
 
 	private Context mContext;
-	
+
 	private ArrayList<BasicNameValuePair> mParams;
 	private HttpVerb mVerb;
 	private Uri mAction;
-	
+
 	private HttpResponse mHttpResponse;
 	private RestResponse mRestResponse;
 	private HttpRequestBase mHttpRequest;
-	
-	public RestService(Context context){
+	private MultipartEntity mEntity;
+
+	public RestService(Context context) {
 		mContext = context;
 	}
 
-	public void setup(HttpVerb verb, Uri action, Bundle params){
+	public void setup(HttpVerb verb, Uri action, Bundle params) {
 		mVerb = verb;
 		mAction = action;
 		extractParams(params);
 	}
-	
-	public void setVerb(HttpVerb verb){
+
+	public void setVerb(HttpVerb verb) {
 		mVerb = verb;
 	}
 
@@ -92,6 +97,10 @@ public class RestService {
 
 	public void setParams(ArrayList<BasicNameValuePair> params) {
 		mParams = params;
+	}
+
+	public void setEntity(MultipartEntity entity) {
+		mEntity = entity;
 	}
 
 	public RestResponse performRequest() {
@@ -106,21 +115,35 @@ public class RestService {
 						+ ": " + mAction.toString(), e);
 			}
 		}
-		
+
 		return mRestResponse;
 	}
 
-	private void setupAdditionalParam() {
-		
+	private void setupAdditionalParam() throws UnsupportedEncodingException {
 		CurrentUser user = CurrentUser.load(mContext);
 		if (user.api_key != null) {
-
-			if (mParams == null){
-				mParams = new ArrayList<BasicNameValuePair>();
+			if (mEntity != null) {
+				setupMultipartParams(user);
+			} else {
+				setupValuePairParams(user);
 			}
-			mParams.add(new BasicNameValuePair("api_key", user.api_key));
-			mParams.add(new BasicNameValuePair("user_id", Integer.toString(user.id)));
 		}
+	}
+
+	private void setupMultipartParams(CurrentUser user)
+			throws UnsupportedEncodingException {
+		StringBody apiKey = new StringBody(user.api_key);
+		StringBody userId = new StringBody(Integer.toString(user.id));
+		mEntity.addPart("api_key", apiKey);
+		mEntity.addPart("user_id", userId);
+	}
+
+	private void setupValuePairParams(CurrentUser user) {
+		if (mParams == null) {
+			mParams = new ArrayList<BasicNameValuePair>();
+		}
+		mParams.add(new BasicNameValuePair("api_key", user.api_key));
+		mParams.add(new BasicNameValuePair("user_id", Integer.toString(user.id)));
 	}
 
 	private void executeRequest() throws ParseException, IOException {
@@ -129,7 +152,6 @@ public class RestService {
 	}
 
 	private void parseResponse() throws ParseException, IOException {
-
 		HttpEntity responseEntity = mHttpResponse.getEntity();
 		StatusLine responseStatus = mHttpResponse.getStatusLine();
 		int statusCode = responseStatus != null ? responseStatus
@@ -176,11 +198,9 @@ public class RestService {
 		mHttpRequest = new HttpPost();
 		mHttpRequest.setURI(new URI(mAction.toString()));
 
-		HttpPost postRequest = (HttpPost) mHttpRequest;
-
 		if (mParams != null) {
-			UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(mParams);
-			postRequest.setEntity(formEntity);
+			HttpPost postRequest = (HttpPost) mHttpRequest;
+			setEntity(postRequest);
 		}
 	}
 
@@ -189,11 +209,19 @@ public class RestService {
 		mHttpRequest = new HttpPut();
 		mHttpRequest.setURI(new URI(mAction.toString()));
 
-		HttpPut putRequest = (HttpPut) mHttpRequest;
+		if (mParams != null || mEntity != null) {
+			HttpPut putRequest = (HttpPut) mHttpRequest;
+			setEntity(putRequest);
+		}
+	}
 
-		if (mParams != null) {
-			UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(mParams);
-			putRequest.setEntity(formEntity);
+	private void setEntity(HttpEntityEnclosingRequestBase request)
+			throws UnsupportedEncodingException {
+		if (mEntity == null) {
+			HttpEntity entity = new UrlEncodedFormEntity(mParams);
+			request.setEntity(entity);
+		} else {
+			request.setEntity(mEntity);
 		}
 	}
 
@@ -249,7 +277,7 @@ public class RestService {
 		mParams = formList;
 	}
 
-	public interface RestListener{
+	public interface RestListener {
 		public abstract void onResult(RestResponse response);
 	}
 }

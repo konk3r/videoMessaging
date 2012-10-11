@@ -15,16 +15,24 @@ public class CurrentUser extends User {
 	private static String mApiKey;
 	private static String mUserKey;
 	private static String mPasswordKey;
-	private static String mNameKey;
+	private static String mFirstNameKey;
+	private static String mLastNameKey;
 	private static String mIdKey;
 	private static String mLastUpdateKey;
 
 	public String api_key;
 	public String last_update;
+	public String first_name;
+	public String last_name;
 
 	private String mPassword;
 
 	public CurrentUser() {
+	}
+	
+	@Override
+	public String getName() {
+		return first_name + " " + last_name;
 	}
 
 	public static CurrentUser load(Context context) {
@@ -40,7 +48,8 @@ public class CurrentUser extends User {
 		mUser.username = prefs.getString(mUserKey, null);
 		mUser.mPassword = prefs.getString(mPasswordKey, null);
 		mUser.api_key = prefs.getString(mApiKey, null);
-		mUser.name = prefs.getString(mNameKey, null);
+		mUser.first_name = prefs.getString(mFirstNameKey, null);
+		mUser.last_name = prefs.getString(mLastNameKey, null);
 		mUser.id = prefs.getInt(mIdKey, -1);
 		mUser.last_update = prefs.getString(mLastUpdateKey, null);
 		return mUser;
@@ -83,7 +92,8 @@ public class CurrentUser extends User {
 		mApiKey = context.getString(R.string.preference_api_key);
 		mUserKey = context.getString(R.string.preference_username);
 		mPasswordKey = context.getString(R.string.preference_password);
-		mNameKey = context.getString(R.string.preference_full_name);
+		mFirstNameKey = context.getString(R.string.preference_first_name);
+		mLastNameKey = context.getString(R.string.preference_last_name);
 		mIdKey = context.getString(R.string.preference_id);
 		mLastUpdateKey = context.getString(R.string.preference_last_update);
 	}
@@ -98,7 +108,8 @@ public class CurrentUser extends User {
 		mPassword = null;
 		api_key = null;
 		id = -1;
-		name = null;
+		first_name = null;
+		last_name = null;
 		last_update = null;
 	}
 
@@ -118,7 +129,8 @@ public class CurrentUser extends User {
 			editor.putString(mUserKey, username);
 			editor.putString(mPasswordKey, mPassword);
 			editor.putString(mApiKey, api_key);
-			editor.putString(mNameKey, name);
+			editor.putString(mFirstNameKey, first_name);
+			editor.putString(mLastNameKey, last_name);
 			editor.putInt(mIdKey, id);
 			editor.putString(mLastUpdateKey, last_update);
 			editor.commit();

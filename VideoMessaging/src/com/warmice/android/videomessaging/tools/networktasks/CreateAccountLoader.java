@@ -2,7 +2,8 @@ package com.warmice.android.videomessaging.tools.networktasks;
 
 import java.util.ArrayList;
 
-import org.apache.http.message.BasicNameValuePair;
+import ch.boye.httpclientandroidlib.message.BasicNameValuePair;
+
 import com.warmice.android.videomessaging.R;
 import com.warmice.android.videomessaging.tools.networktasks.RestService.*;
 

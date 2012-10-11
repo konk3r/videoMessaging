@@ -23,6 +23,7 @@ import com.warmice.android.videomessaging.data.CurrentUser;
 import com.warmice.android.videomessaging.file.image.FileImage;
 import com.warmice.android.videomessaging.file.image.Image;
 import com.warmice.android.videomessaging.tools.networktasks.SignOutTask;
+import com.warmice.android.videomessaging.tools.networktasks.UpdateUserTask;
 
 public class SlidingMenuActivity extends SlidingFragmentActivity {
 
@@ -78,13 +79,13 @@ public class SlidingMenuActivity extends SlidingFragmentActivity {
 		mUsername.setText(user.username);
 		Bitmap image = loadImage();
 		if (isEditting) {
-			mFirstName.setText(user.name);
-			mLastName.setText(user.name);
+			mFirstName.setText(user.first_name);
+			mLastName.setText(user.last_name);
 			if (image != null) {
 				mEditPhoto.setImageBitmap(image);
 			}
 		} else {
-			mName.setText(user.name);
+			mName.setText(user.getName());
 			if (image != null) {
 				mPhoto.setImageBitmap(image);
 			}
@@ -125,6 +126,9 @@ public class SlidingMenuActivity extends SlidingFragmentActivity {
 		case R.id.photo:
 			captureNewPhoto();
 			break;
+		case R.id.save:
+			updateUser();
+			break;
 		}
 	}
 
@@ -149,6 +153,12 @@ public class SlidingMenuActivity extends SlidingFragmentActivity {
 		Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
 		intent.setType("image/*");
 		startActivityForResult(intent, LOAD_IMAGE);
+	}
+
+	private void updateUser() {
+		UpdateUserTask task = new UpdateUserTask(this);
+		task.setNewPicture();
+		task.execute();
 	}
 
 	protected boolean fieldIsEmpty(EditText editText) {

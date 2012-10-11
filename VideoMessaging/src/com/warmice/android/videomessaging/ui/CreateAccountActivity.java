@@ -20,6 +20,9 @@ import android.widget.EditText;
 public class CreateAccountActivity extends BaseActivity implements
 		LoaderManager.LoaderCallbacks<RestResponse> {
 
+	public static final String EXTRA_USERNAME = "extra_username";
+	public static final String EXTRA_PASSWORD = "extra_password";
+	
 	private EditText mUsernameField;
 	private EditText mFirstNameField;
 	private EditText mLastNameField;
@@ -32,6 +35,16 @@ public class CreateAccountActivity extends BaseActivity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_create_account);
 		loadViews();
+		parseAndFillPresetValues();
+	}
+
+	private void parseAndFillPresetValues() {
+		Intent intent = getIntent();
+		String username = intent.getStringExtra(EXTRA_USERNAME);
+		String password = intent.getStringExtra(EXTRA_PASSWORD);
+		
+		mUsernameField.setText(username);
+		mPasswordField.setText(password);
 	}
 
 	private void loadViews() {

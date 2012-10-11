@@ -2,9 +2,10 @@ package com.warmice.android.videomessaging.tools.networktasks;
 
 import java.util.ArrayList;
 
-import org.apache.http.HttpStatus;
-import org.apache.http.message.BasicNameValuePair;
 import org.codehaus.jackson.map.ObjectMapper;
+
+import ch.boye.httpclientandroidlib.HttpStatus;
+import ch.boye.httpclientandroidlib.message.BasicNameValuePair;
 
 import com.google.android.gcm.GCMRegistrar;
 import com.warmice.android.videomessaging.R;

@@ -21,6 +21,16 @@ import android.os.RemoteException;
 
 public class Contact extends User {
 	public String approved;
+	public String name;
+
+	@Override
+	public String getName(){
+		if (name.equals(" ")){
+			return username;
+		}
+		
+		return name;
+	}
 	
 	public static Contact load(Context context, int id) {
 		ContentResolver resolver = context.getContentResolver();

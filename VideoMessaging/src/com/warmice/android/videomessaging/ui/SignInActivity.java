@@ -16,20 +16,19 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
-public class SignInActivity extends BaseActivity implements
-		SignInListener {
+public class SignInActivity extends BaseActivity implements SignInListener {
 
 	private final static int REQUEST_CREATE = 0;
 	private final static int REQUEST_SIGNED_IN = 1;
-	
+
 	EditText mUsernameField;
 	EditText mPasswordField;
 	ProgressDialog mProgressDialog;
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if (CurrentUser.load(this).isSignedIn()){
+		if (CurrentUser.load(this).isSignedIn()) {
 			startMainActivity();
 		} else {
 			setContentView(R.layout.activity_sign_in);
@@ -63,7 +62,7 @@ public class SignInActivity extends BaseActivity implements
 		if (accountCreated) {
 			signInFromBundle(data);
 		}
-		
+
 		CurrentUser user = CurrentUser.load(this);
 		if (user.isSignedIn()) {
 			finish();
@@ -97,7 +96,7 @@ public class SignInActivity extends BaseActivity implements
 	private void verifyFieldsAndSignIn() {
 		if (inputFieldsAreValid()) {
 			mProgressDialog.show();
-			
+
 			SignInTask task = new SignInTask(this, this);
 			String username = getTrimmedText(mUsernameField);
 			String password = getTrimmedText(mPasswordField);
@@ -115,6 +114,10 @@ public class SignInActivity extends BaseActivity implements
 
 	private void create_account() {
 		Intent intent = new Intent(this, CreateAccountActivity.class);
+		String username = getTrimmedText(mUsernameField);
+		String password = getTrimmedText(mPasswordField);
+		intent.putExtra(CreateAccountActivity.EXTRA_USERNAME, username);
+		intent.putExtra(CreateAccountActivity.EXTRA_PASSWORD, password);
 		startActivityForResult(intent, 0);
 	}
 

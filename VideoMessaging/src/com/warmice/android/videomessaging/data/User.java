@@ -5,8 +5,8 @@ import android.content.Context;
 public abstract class User {
 
 	public String username;
+	public String image_url;
 	public int id;
-	public String name;
 
 	public User() {
 	}
@@ -24,13 +24,7 @@ public abstract class User {
 		}
 	}
 	
-	public String getName(){
-		if (name.equals(" ")){
-			return username;
-		}
-		
-		return name;
-	}
+	public abstract String getName();
 	
 	public abstract void store(Context context);
 }

@@ -3,6 +3,8 @@ package com.warmice.android.videomessaging.file.image;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import ch.boye.httpclientandroidlib.entity.mime.content.FileBody;
+
 import com.warmice.android.videomessaging.data.CurrentUser;
 
 public class FileImage extends Image {
@@ -16,6 +18,15 @@ public class FileImage extends Image {
 		CurrentUser user = CurrentUser.load(mContext);
 		String fileName = String.format("/avt%s.jpg", user.id);
 		return fileName;
+	}
+
+	public FileBody getFileBody() {
+		if (mFile == null) {
+			buildImageFile();
+		}
+		FileBody body = new FileBody(mFile, "image/jpeg");
+		
+		return body;
 	}
 
 	@Override
