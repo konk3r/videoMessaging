@@ -2,7 +2,7 @@ package com.warmice.android.videomessaging.ui;
 
 import com.actionbarsherlock.app.SherlockActivity;
 import com.warmice.android.videomessaging.R;
-import com.warmice.android.videomessaging.file.image.FileImage;
+import com.warmice.android.videomessaging.file.image.CurrentUserImage;
 import com.warmice.android.videomessaging.file.image.Image;
 import com.warmice.android.videomessaging.ui.widget.CropImageView;
 
@@ -59,7 +59,7 @@ public class CropImageActivity extends SherlockActivity {
 
 	private void saveImage(Bitmap bitmap) {
 		Context applicationContext = getApplicationContext();
-		Image image = new FileImage(applicationContext);
+		Image image = new CurrentUserImage(applicationContext);
 		image.store(bitmap);
 	}
 }

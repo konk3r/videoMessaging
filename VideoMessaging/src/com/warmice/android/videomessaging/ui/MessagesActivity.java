@@ -20,7 +20,7 @@ import com.actionbarsherlock.view.Menu;
 import com.warmice.android.videomessaging.R;
 import com.warmice.android.videomessaging.data.Message;
 import com.warmice.android.videomessaging.data.CurrentUser;
-import com.warmice.android.videomessaging.file.image.FileImage;
+import com.warmice.android.videomessaging.file.image.CurrentUserImage;
 import com.warmice.android.videomessaging.file.image.Image;
 import com.warmice.android.videomessaging.provider.MessagingContract.Contacts;
 import com.warmice.android.videomessaging.tools.networktasks.SendMessageTask;
@@ -40,6 +40,8 @@ import android.widget.ListView;
 
 public class MessagesActivity extends SlidingMenuActivity implements
 		LoaderManager.LoaderCallbacks<Cursor> {
+	private final static int USER_THUMBNAIL = 1;
+
 	public final static String EXTRA_CONTACT_ID = "extra_user_id";
 	public final static String EXTRA_USERNAME = "extra_user_name";
 
@@ -59,11 +61,9 @@ public class MessagesActivity extends SlidingMenuActivity implements
 	}
 
 	private void loadIcons() {
-		Image image = new FileImage(getApplicationContext());
+		Image image = new CurrentUserImage(getApplicationContext());
 		image.setDimens(64, 64);
-		image.load();
-		Bitmap userBitmap = image.getBitmap();
-		mAdapter.setUserIcon(userBitmap);
+		image.load(this, USER_THUMBNAIL);
 	}
 
 	private void initializeViews() {
@@ -89,7 +89,7 @@ public class MessagesActivity extends SlidingMenuActivity implements
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getSupportMenuInflater().inflate(R.menu.messages, menu);
-		return super.onCreateOptionsMenu(menu);
+		return true;
 	}
 
 	@Override
@@ -125,7 +125,7 @@ public class MessagesActivity extends SlidingMenuActivity implements
 	private void sendMessage() {
 		Message message = pullNewMessageFromInput();
 		message.store(this);
-		
+
 		SendMessageTask task = new SendMessageTask(this);
 		task.setMessage(message);
 		task.execute();
@@ -138,5 +138,24 @@ public class MessagesActivity extends SlidingMenuActivity implements
 		message.receiver_id = mContactId;
 		message.message_type = Message.TYPE_TEXT;
 		return message;
+	}
+
+	@Override
+	public void onImageLoaded(int imageId, Boolean succeeded, Bitmap bitmap) {
+		if (succeeded) {
+			switch (imageId) {
+			case USER_THUMBNAIL:
+				setUserThumbnail(bitmap);
+				break;
+			default:
+				super.onImageLoaded(imageId, succeeded, bitmap);
+				break;
+			}
+		}
+	}
+
+	private void setUserThumbnail(Bitmap bitmap) {
+		mAdapter.setUserIcon(bitmap);
+		mList.invalidate();
 	}
 }

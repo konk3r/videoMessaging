@@ -6,11 +6,28 @@ import android.graphics.BitmapFactory;
 import ch.boye.httpclientandroidlib.entity.mime.content.FileBody;
 
 import com.warmice.android.videomessaging.data.CurrentUser;
+import com.warmice.android.videomessaging.tools.networktasks.ImageDownloader;
 
-public class FileImage extends Image {
+public class CurrentUserImage extends Image {
 
-	public FileImage(Context context) {
+	public CurrentUserImage(Context context) {
 		super(context);
+	}
+
+	@Override
+	protected void onLoadFailed() {
+		downloadImage();
+	}
+
+	private void downloadImage() {
+		CurrentUser user = CurrentUser.load(mContext);
+		if (user.image_url != null) {
+			ImageDownloader downloader = new ImageDownloader();
+			downloader.setFile(mFile).setUrl(user.image_url).download();
+			if (downloader.succeeded()) {
+				super.onLoad();
+			}
+		}
 	}
 
 	@Override
@@ -25,12 +42,12 @@ public class FileImage extends Image {
 			buildImageFile();
 		}
 		FileBody body = new FileBody(mFile, "image/jpeg");
-		
+
 		return body;
 	}
 
 	@Override
-	protected Bitmap decodeImage() {
+	protected Bitmap onDecodeImage() {
 		return BitmapFactory.decodeFile(mFile.getPath(), mOptions);
 	}
 
@@ -46,5 +63,10 @@ public class FileImage extends Image {
 		} else {
 			return false;
 		}
+	}
+
+	public void delete() {
+		buildImageFile();
+		mFile.delete();
 	}
 }

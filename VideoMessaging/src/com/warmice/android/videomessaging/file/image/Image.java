@@ -8,12 +8,13 @@ import java.io.OutputStream;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
 
 import com.warmice.android.videomessaging.BuildConfig;
 
-public abstract class Image {
+public abstract class Image extends AsyncTask<Void, Void, Void> {
 	private static final String TAG = "File Manager";
 	private static final int JPEG_QUALITY = 75;
 
@@ -23,6 +24,9 @@ public abstract class Image {
 	protected int mHeight;
 	protected Bitmap mBitmap;
 	protected File mFile;
+	protected ImageLoadedListener mLoadListener;
+	protected int mImageId;
+	private boolean mLoadSucceeded;
 
 	public Image(Context context) {
 		mContext = context;
@@ -33,25 +37,44 @@ public abstract class Image {
 		mHeight = height;
 	}
 
-	public final void load() {
-		onPreLoad();
-		if (resourceExists()) {
-			setFileImageOptions();
-			mBitmap = decodeImage();
-		}
-	}
-
-	protected boolean resourceExists() {
-		return true;
+	public void setImageLoadedListener(ImageLoadedListener listener) {
+		mLoadListener = listener;
 	}
 
 	public Bitmap getBitmap() {
 		return mBitmap;
 	}
 
-	public void setFileImageOptions() {
-		createOptions();
+	public final void load(ImageLoadedListener listener, int imageId) {
+		mLoadListener = listener;
+		mImageId = imageId;
+		mLoadSucceeded = false;
+		execute();
+	}
+
+	protected void onPreLoad() {
+	}
+
+	protected void onLoad() {
+		setFileImageOptions();
 		decodeImage();
+		mLoadSucceeded  = true;
+	}
+
+	protected void decodeImage() {
+		mBitmap = onDecodeImage();
+	}
+
+	protected void onLoadFailed() {
+	}
+
+	protected boolean resourceExists() {
+		return true;
+	}
+
+	protected void setFileImageOptions() {
+		createOptions();
+		onDecodeImage();
 		setImageScale();
 		setupOptionsForDecoding();
 	}
@@ -118,11 +141,29 @@ public abstract class Image {
 		fOut.close();
 	}
 
-	protected void onPreLoad() {
-	}
-
 	protected abstract String buildFileName();
 
-	protected abstract Bitmap decodeImage();
+	protected abstract Bitmap onDecodeImage();
+
+	@Override
+	protected Void doInBackground(Void... params) {
+		onPreLoad();
+		if (resourceExists()) {
+			onLoad();
+		} else {
+			onLoadFailed();
+		}
+		return null;
+	}
+
+	@Override
+	protected void onPostExecute(Void result) {
+		mLoadListener.onImageLoaded(mImageId, mLoadSucceeded, mBitmap);
+		super.onPostExecute(result);
+	}
+
+	public interface ImageLoadedListener {
+		public void onImageLoaded(int imageId, Boolean succeeded, Bitmap bitmap);
+	}
 
 }

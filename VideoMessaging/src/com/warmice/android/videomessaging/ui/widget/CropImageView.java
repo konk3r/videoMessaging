@@ -1,6 +1,7 @@
 package com.warmice.android.videomessaging.ui.widget;
 
 import com.warmice.android.videomessaging.R;
+import com.warmice.android.videomessaging.file.image.Image.ImageLoadedListener;
 import com.warmice.android.videomessaging.file.image.ResourceImage;
 
 import android.annotation.SuppressLint;
@@ -15,7 +16,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class CropImageView extends ViewGroup {
+public class CropImageView extends ViewGroup implements ImageLoadedListener {
 
 	final int photoHeight = 256;
 	final int photoWidth = 256;
@@ -61,10 +62,18 @@ public class CropImageView extends ViewGroup {
 		final int count = getChildCount();
 
 		Drawable background = getBackground();
-		int backgroundHeight = background.getIntrinsicHeight();
-		int backgroundWidth = background.getIntrinsicWidth();
-		int width = MeasureSpec.getSize(widthMeasureSpec);
-		int height = MeasureSpec.getSize(heightMeasureSpec);
+		int backgroundHeight = 0;
+		int backgroundWidth = 0;
+		int width = 0;
+		int height = 0;
+		
+		if (background != null){
+			backgroundHeight = background.getIntrinsicHeight();
+			backgroundWidth = background.getIntrinsicWidth();
+			width = MeasureSpec.getSize(widthMeasureSpec);
+			height = MeasureSpec.getSize(heightMeasureSpec);
+			
+		}
 
 		if (backgroundHeight > 0 && backgroundWidth > 0 && height > 0
 				&& width > 0) {
@@ -168,23 +177,25 @@ public class CropImageView extends ViewGroup {
 		return new LayoutParams(p);
 	}
 
-	@SuppressLint("NewApi")
-	@SuppressWarnings("deprecation")
 	public void setBitmap(Context context, Uri imageUri) {
-		loadBitmap(context, imageUri);
-		Drawable image = new BitmapDrawable(getResources(), mBitmap);
-		if (Build.VERSION.SDK_INT < 16) {
-			setBackgroundDrawable(image);
-		} else {
-			setBackground(image);
-		}
-	}
-
-	private void loadBitmap(Context context, Uri imageUri) {
 		ResourceImage image = new ResourceImage(context);
 		image.setDimens(photoWidth, photoHeight);
-		image.load(imageUri);
-		mBitmap = image.getBitmap();
+		image.load(this, 0, imageUri);
+	}
+
+	@SuppressLint("NewApi")
+	@SuppressWarnings("deprecation")
+	@Override
+	public void onImageLoaded(int imageId, Boolean succeeded, Bitmap bitmap) {
+		if (succeeded) {
+			mBitmap = bitmap;
+			Drawable image = new BitmapDrawable(getResources(), mBitmap);
+			if (Build.VERSION.SDK_INT < 16) {
+				setBackgroundDrawable(image);
+			} else {
+				setBackground(image);
+			}
+		}
 	}
 
 	public Bitmap getCroppedBitmap() {

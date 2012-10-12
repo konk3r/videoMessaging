@@ -1,29 +1,31 @@
 package com.warmice.android.videomessaging.data;
 
-import com.warmice.android.videomessaging.R;
-import com.warmice.android.videomessaging.util.BCrypt;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 
+import com.warmice.android.videomessaging.file.image.CurrentUserImage;
+import com.warmice.android.videomessaging.util.BCrypt;
+
 public class CurrentUser extends User {
 	private static CurrentUser mUser;
 
-	private static String mPrefKey;
-	private static String mApiKey;
-	private static String mUserKey;
-	private static String mPasswordKey;
-	private static String mFirstNameKey;
-	private static String mLastNameKey;
-	private static String mIdKey;
-	private static String mLastUpdateKey;
+	private static final String mPrefKey = "my_preferences";
+	private static final String mApiKey = "api_key";
+	private static final String mUserKey = "username";
+	private static final String mPasswordKey = "password";
+	private static final String mFirstNameKey = "first_name";
+	private static final String mLastNameKey = "last_name";
+	private static final String mImageUrlKey = "image_url";
+	private static final String mIdKey = "id";
+	private static final String mLastUpdateKey = "last_update";
 
 	public String api_key;
 	public String last_update;
 	public String first_name;
 	public String last_name;
+	public String image_url;
 
 	private String mPassword;
 
@@ -50,6 +52,7 @@ public class CurrentUser extends User {
 		mUser.api_key = prefs.getString(mApiKey, null);
 		mUser.first_name = prefs.getString(mFirstNameKey, null);
 		mUser.last_name = prefs.getString(mLastNameKey, null);
+		mUser.image_url = prefs.getString(mImageUrlKey, null);
 		mUser.id = prefs.getInt(mIdKey, -1);
 		mUser.last_update = prefs.getString(mLastUpdateKey, null);
 		return mUser;
@@ -79,23 +82,9 @@ public class CurrentUser extends User {
 	}
 
 	private static SharedPreferences getPreferences(Context context) {
-		if (mPrefKey == null) {
-			loadKeys(context);
-		}
 		SharedPreferences prefs = context.getSharedPreferences(mPrefKey,
 				Context.MODE_PRIVATE);
 		return prefs;
-	}
-
-	private static void loadKeys(Context context) {
-		mPrefKey = context.getString(R.string.preferences);
-		mApiKey = context.getString(R.string.preference_api_key);
-		mUserKey = context.getString(R.string.preference_username);
-		mPasswordKey = context.getString(R.string.preference_password);
-		mFirstNameKey = context.getString(R.string.preference_first_name);
-		mLastNameKey = context.getString(R.string.preference_last_name);
-		mIdKey = context.getString(R.string.preference_id);
-		mLastUpdateKey = context.getString(R.string.preference_last_update);
 	}
 
 	public void signOut(Context context) {
@@ -110,6 +99,7 @@ public class CurrentUser extends User {
 		id = -1;
 		first_name = null;
 		last_name = null;
+		image_url = null;
 		last_update = null;
 	}
 
@@ -124,16 +114,21 @@ public class CurrentUser extends User {
 
 		@Override
 		protected Void doInBackground(Context... params) {
+			Context context = params[0];
 			encryptPassword();
-			SharedPreferences.Editor editor = getEditor(params[0]);
+			SharedPreferences.Editor editor = getEditor(context);
 			editor.putString(mUserKey, username);
 			editor.putString(mPasswordKey, mPassword);
 			editor.putString(mApiKey, api_key);
 			editor.putString(mFirstNameKey, first_name);
 			editor.putString(mLastNameKey, last_name);
+			editor.putString(mImageUrlKey, image_url);
 			editor.putInt(mIdKey, id);
 			editor.putString(mLastUpdateKey, last_update);
 			editor.commit();
+			
+			CurrentUserImage image = new CurrentUserImage(context);
+			image.delete();
 
 			return null;
 		}

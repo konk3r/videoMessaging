@@ -4,36 +4,42 @@
     android:layout_height="match_parent"
     android:background="@color/black" >
 
-    <com.warmice.android.videomessaging.ui.widget.CropImageView
-        android:id="@+id/background"
-        android:layout_centerInParent="true"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_toLeftOf="@+id/horizontal_divider" />
-    
+        android:layout_toLeftOf="@+id/horizontal_divider"
+        android:gravity="center" >
+
+        <com.warmice.android.videomessaging.ui.widget.CropImageView
+            android:id="@+id/background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        
+    </LinearLayout>
+
     <View
         android:id="@+id/horizontal_divider"
         android:layout_width="1dp"
         android:layout_height="match_parent"
         android:layout_toLeftOf="@+id/crop_image"
         android:background="@color/divider" />
-    
+
     <ImageView
-        android:contentDescription="@string/checkmark"
         android:id="@+id/check_button"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:background="@drawable/ic_action_checkmark" />
+        android:background="@drawable/ic_action_checkmark"
+        android:contentDescription="@string/checkmark" />
 
     <Button
         android:id="@+id/crop_image"
-        android:layout_alignLeft="@+id/check_button"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:layout_alignLeft="@+id/check_button"
         android:layout_alignParentRight="true"
         android:background="@drawable/borderless_button"
-        android:onClick="onClick"/>
+        android:onClick="onClick" />
 
 </RelativeLayout>

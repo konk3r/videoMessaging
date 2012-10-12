@@ -20,23 +20,30 @@ import com.slidingmenu.lib.SlidingMenu;
 import com.slidingmenu.lib.app.SlidingFragmentActivity;
 import com.warmice.android.videomessaging.R;
 import com.warmice.android.videomessaging.data.CurrentUser;
-import com.warmice.android.videomessaging.file.image.FileImage;
+import com.warmice.android.videomessaging.file.image.CurrentUserImage;
 import com.warmice.android.videomessaging.file.image.Image;
+import com.warmice.android.videomessaging.file.image.Image.ImageLoadedListener;
 import com.warmice.android.videomessaging.tools.networktasks.SignOutTask;
 import com.warmice.android.videomessaging.tools.networktasks.UpdateUserTask;
 
-public class SlidingMenuActivity extends SlidingFragmentActivity {
+public class SlidingMenuActivity extends SlidingFragmentActivity implements
+		ImageLoadedListener {
+
+	private final static int USER_ICON = 0;
 
 	private static final int LOAD_IMAGE = 0;
 	private static final int CROP_IMAGE = 1;
 
-	private ViewGroup mMenu;
-	private TextView mName;
-	private TextView mUsername;
-	private TextView mFirstName;
-	private TextView mLastName;
+	private ViewGroup mAccountMenu;
+	private ViewGroup mEditMenu;
+	private TextView mAccountName;
+	private TextView mAccountUsername;
+	private TextView mEditUsername;
+	private TextView mEditFirstName;
+	private TextView mEditLastName;
 	private ImageButton mEditPhoto;
 	private ImageView mPhoto;
+	private Bitmap mBitmap;
 
 	private boolean isEditting;
 
@@ -44,52 +51,64 @@ public class SlidingMenuActivity extends SlidingFragmentActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		displayAccountDetails();
+		loadImage();
+		buildMenuDropShadow();
 
 		ActionBarSherlock sherlock = getSherlock();
 		sherlock.getActionBar().setDisplayHomeAsUpEnabled(true);
 		sherlock.getActionBar().setHomeButtonEnabled(true);
 	}
 
-	private void loadMenu() {
-		loadViews();
-		setBehindContentView(mMenu);
-		setupMenuFields();
-		buildMenuDropShadow();
+	private void displayAccountDetails() {
+		if (mAccountMenu == null) {
+			loadAccountViews();
+			setupAccountMenuFields();
+		}
+		setBehindContentView(mAccountMenu);
+		displayUserIcon(mBitmap);
+		isEditting = false;
 	}
 
-	private void loadViews() {
+	private void loadAccountViews() {
 		LayoutInflater inflater = LayoutInflater.from(this);
-		if (isEditting) {
-			mMenu = (ViewGroup) inflater.inflate(R.layout.sliding_menu_edit,
-					null);
-			mFirstName = (TextView) mMenu.findViewById(R.id.first_name);
-			mLastName = (TextView) mMenu.findViewById(R.id.last_name);
-			mEditPhoto = (ImageButton) mMenu.findViewById(R.id.photo);
-		} else {
-			mMenu = (ViewGroup) inflater.inflate(R.layout.sliding_menu, null);
-			mName = (TextView) mMenu.findViewById(R.id.name);
-			mPhoto = (ImageView) mMenu.findViewById(R.id.photo);
-		}
-
-		mUsername = (TextView) mMenu.findViewById(R.id.username);
+		mAccountMenu = (ViewGroup) inflater
+				.inflate(R.layout.sliding_menu, null);
+		mAccountName = (TextView) mAccountMenu.findViewById(R.id.name);
+		mPhoto = (ImageView) mAccountMenu.findViewById(R.id.photo);
+		mAccountUsername = (TextView) mAccountMenu.findViewById(R.id.username);
 	}
 
-	private void setupMenuFields() {
+	private void setupAccountMenuFields() {
 		CurrentUser user = CurrentUser.load(this);
-		mUsername.setText(user.username);
-		Bitmap image = loadImage();
-		if (isEditting) {
-			mFirstName.setText(user.first_name);
-			mLastName.setText(user.last_name);
-			if (image != null) {
-				mEditPhoto.setImageBitmap(image);
-			}
-		} else {
-			mName.setText(user.getName());
-			if (image != null) {
-				mPhoto.setImageBitmap(image);
-			}
+		mAccountUsername.setText(user.username);
+		mAccountName.setText(user.getName());
+	}
+
+	private void displayEditView() {
+		if (mEditMenu == null) {
+			loadEditViews();
+			setupEditMenuFields();
 		}
+		setBehindContentView(mEditMenu);
+		displayUserIcon(mBitmap);
+		isEditting = true;
+	}
+
+	private void loadEditViews() {
+		LayoutInflater inflater = LayoutInflater.from(this);
+		mEditMenu = (ViewGroup) inflater.inflate(R.layout.sliding_menu_edit,
+				null);
+		mEditFirstName = (TextView) mEditMenu.findViewById(R.id.first_name);
+		mEditLastName = (TextView) mEditMenu.findViewById(R.id.last_name);
+		mEditPhoto = (ImageButton) mEditMenu.findViewById(R.id.photo);
+		mEditUsername = (TextView) mEditMenu.findViewById(R.id.username);
+	}
+
+	private void setupEditMenuFields() {
+		CurrentUser user = CurrentUser.load(this);
+		mEditUsername.setText(user.username);
+		mEditFirstName.setText(user.first_name);
+		mEditLastName.setText(user.last_name);
 	}
 
 	private void buildMenuDropShadow() {
@@ -139,16 +158,6 @@ public class SlidingMenuActivity extends SlidingFragmentActivity {
 		startActivity(intent);
 	}
 
-	private void displayEditView() {
-		isEditting = true;
-		loadMenu();
-	}
-
-	private void displayAccountDetails() {
-		isEditting = false;
-		loadMenu();
-	}
-
 	private void captureNewPhoto() {
 		Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
 		intent.setType("image/*");
@@ -191,7 +200,7 @@ public class SlidingMenuActivity extends SlidingFragmentActivity {
 			cropImage(data);
 			break;
 		case CROP_IMAGE:
-			mEditPhoto.setImageBitmap(loadImage());
+			loadImage();
 			break;
 		}
 
@@ -207,12 +216,34 @@ public class SlidingMenuActivity extends SlidingFragmentActivity {
 		}
 	}
 
-	private Bitmap loadImage() {
-		Image image = new FileImage(getApplicationContext());
+	private void loadImage() {
+		Image image = new CurrentUserImage(getApplicationContext());
 		image.setDimens(256, 256);
-		image.load();
-		Bitmap bitmap = image.getBitmap();
-		return bitmap;
+		image.load(this, USER_ICON);
+	}
+
+	@Override
+	public void onImageLoaded(int imageId, Boolean succeeded, Bitmap bitmap) {
+		if (succeeded) {
+			switch (imageId) {
+			case USER_ICON:
+				mBitmap = bitmap;
+				displayUserIcon(bitmap);
+				break;
+			}
+		}
+	}
+
+	private void displayUserIcon(Bitmap bitmap) {
+		if (bitmap != null) {
+			if (mEditPhoto != null) {
+				mEditPhoto.setImageBitmap(bitmap);
+			}
+
+			if (mPhoto != null) {
+				mPhoto.setImageBitmap(bitmap);
+			}
+		}
 	}
 
 }

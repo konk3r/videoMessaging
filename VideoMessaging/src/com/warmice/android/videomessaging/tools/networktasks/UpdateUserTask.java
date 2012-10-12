@@ -7,7 +7,7 @@ import ch.boye.httpclientandroidlib.entity.mime.content.StringBody;
 
 import com.warmice.android.videomessaging.BuildConfig;
 import com.warmice.android.videomessaging.R;
-import com.warmice.android.videomessaging.file.image.FileImage;
+import com.warmice.android.videomessaging.file.image.CurrentUserImage;
 
 import android.content.Context;
 import android.util.Log;
@@ -71,7 +71,7 @@ public class UpdateUserTask extends RestTask {
 	private void loadFileEntity() {
 		if (hasNewPicture) {
 			try {
-				FileImage image = new FileImage(mContext);
+				CurrentUserImage image = new CurrentUserImage(mContext);
 				FileBody body = image.getFileBody();
 				mEntity.addPart("image", body);
 			} catch (Exception e) {

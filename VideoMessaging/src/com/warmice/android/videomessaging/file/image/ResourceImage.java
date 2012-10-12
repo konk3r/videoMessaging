@@ -21,9 +21,9 @@ public class ResourceImage extends Image {
 		mUri = uri;
 	}
 
-	public void load(Uri uri) {
+	public void load(ImageLoadedListener listener, int imageId, Uri uri) {
 		setUri(uri);
-		super.load();
+		super.load(listener, imageId);
 	}
 
 	@Override
@@ -34,7 +34,7 @@ public class ResourceImage extends Image {
 	}
 
 	@Override
-	protected Bitmap decodeImage() {
+	protected Bitmap onDecodeImage() {
 		try {
 			ContentResolver cr = mContext.getContentResolver();
 			InputStream is;
