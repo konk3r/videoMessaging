@@ -42,8 +42,8 @@ public class SlidingMenuActivity extends SlidingFragmentActivity implements
 	private TextView mAccountName;
 	private TextView mAccountUsername;
 	private TextView mEditUsername;
-	private TextView mEditFirstName;
-	private TextView mEditLastName;
+	private EditText mEditFirstName;
+	private EditText mEditLastName;
 	private ImageButton mEditPhoto;
 	private ImageView mPhoto;
 	private Bitmap mBitmap;
@@ -106,8 +106,8 @@ public class SlidingMenuActivity extends SlidingFragmentActivity implements
 		LayoutInflater inflater = LayoutInflater.from(this);
 		mEditMenu = (ViewGroup) inflater.inflate(R.layout.sliding_menu_edit,
 				null);
-		mEditFirstName = (TextView) mEditMenu.findViewById(R.id.first_name);
-		mEditLastName = (TextView) mEditMenu.findViewById(R.id.last_name);
+		mEditFirstName = (EditText) mEditMenu.findViewById(R.id.first_name);
+		mEditLastName = (EditText) mEditMenu.findViewById(R.id.last_name);
 		mEditPhoto = (ImageButton) mEditMenu.findViewById(R.id.photo);
 		mEditUsername = (TextView) mEditMenu.findViewById(R.id.username);
 	}
@@ -179,6 +179,8 @@ public class SlidingMenuActivity extends SlidingFragmentActivity implements
 			task.setNewPicture();
 			mImageUpdated = false;
 		}
+		task.setFirstName(getTrimmedText(mEditFirstName));
+		task.setLastName(getTrimmedText(mEditLastName));
 		task.execute();
 	}
 
@@ -193,7 +195,7 @@ public class SlidingMenuActivity extends SlidingFragmentActivity implements
 	public void onUpdateFinish() {
 		destroyProgress();
 		displayAccountDetails();
-		setupEditMenuFields();
+		setupAccountMenuFields();
 	}
 
 	private void destroyProgress() {
