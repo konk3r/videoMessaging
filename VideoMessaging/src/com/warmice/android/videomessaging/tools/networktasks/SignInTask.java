@@ -2,8 +2,6 @@ package com.warmice.android.videomessaging.tools.networktasks;
 
 import java.util.ArrayList;
 
-import org.codehaus.jackson.map.ObjectMapper;
-
 import ch.boye.httpclientandroidlib.HttpStatus;
 import ch.boye.httpclientandroidlib.message.BasicNameValuePair;
 
@@ -61,7 +59,8 @@ public class SignInTask extends RestTask {
 	public void onPostExecute(RestResponse response) {
 		if (response.getCode() == HttpStatus.SC_OK){
 			registerDeviceForGCM();
-			storeCredentials(response.getData());
+			String json = response.getData();
+			CurrentUser.storeNewUser(mContext, json, mPassword);
 		}
 		mListener.onSignInResult(response);
 	}
@@ -71,17 +70,6 @@ public class SignInTask extends RestTask {
 		GCMRegistrar.checkDevice(mContext);
 		GCMRegistrar.checkManifest(mContext);
 		GCMRegistrar.register(mContext, senderId);
-	}
-
-	private void storeCredentials(String json) {
-		try {
-			final ObjectMapper mapper = new ObjectMapper();
-			final CurrentUser user = mapper.readValue(json, CurrentUser.class);
-			user.setPassword(mPassword);
-			user.store(mContext);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 	
 	public interface SignInListener{

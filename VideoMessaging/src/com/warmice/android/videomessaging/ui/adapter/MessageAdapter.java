@@ -22,6 +22,7 @@ public class MessageAdapter extends CursorAdapter {
 	private int mSenderIdIndex;
 	private int userId;
 	private Bitmap mUserBitmap;
+	private Bitmap mContactBitmap;
 
 	public MessageAdapter(Context context, Cursor c) {
 		super(context, c, false);
@@ -60,6 +61,9 @@ public class MessageAdapter extends CursorAdapter {
 			}
 			break;
 		case TYPE_INBOUND:
+			if (mContactBitmap != null) {
+				holder.icon.setImageBitmap(mContactBitmap);
+			}
 			break;
 		}
 	}
@@ -134,6 +138,10 @@ public class MessageAdapter extends CursorAdapter {
 
 	public void setUserIcon(Bitmap userBitmap) {
 		mUserBitmap = userBitmap;
+	}
+
+	public void setContactIcon(Bitmap bitmap) {
+		mContactBitmap = bitmap;
 	}
 
 }

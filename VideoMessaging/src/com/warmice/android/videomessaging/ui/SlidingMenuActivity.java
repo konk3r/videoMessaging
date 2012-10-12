@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,9 +26,11 @@ import com.warmice.android.videomessaging.file.image.Image;
 import com.warmice.android.videomessaging.file.image.Image.ImageLoadedListener;
 import com.warmice.android.videomessaging.tools.networktasks.SignOutTask;
 import com.warmice.android.videomessaging.tools.networktasks.UpdateUserTask;
+import com.warmice.android.videomessaging.tools.networktasks.UpdateUserTask.UserUpdateListener;
+import com.warmice.android.videomessaging.ui.dialog.ProgressFragment;
 
 public class SlidingMenuActivity extends SlidingFragmentActivity implements
-		ImageLoadedListener {
+		ImageLoadedListener, UserUpdateListener {
 
 	private final static int USER_ICON = 0;
 
@@ -44,8 +47,12 @@ public class SlidingMenuActivity extends SlidingFragmentActivity implements
 	private ImageButton mEditPhoto;
 	private ImageView mPhoto;
 	private Bitmap mBitmap;
+	
+	private DialogFragment mProgressFragment;
 
 	private boolean isEditting;
+
+	private boolean mImageUpdated;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -54,6 +61,7 @@ public class SlidingMenuActivity extends SlidingFragmentActivity implements
 		loadImage();
 		buildMenuDropShadow();
 
+		mImageUpdated = false;
 		ActionBarSherlock sherlock = getSherlock();
 		sherlock.getActionBar().setDisplayHomeAsUpEnabled(true);
 		sherlock.getActionBar().setHomeButtonEnabled(true);
@@ -165,9 +173,31 @@ public class SlidingMenuActivity extends SlidingFragmentActivity implements
 	}
 
 	private void updateUser() {
-		UpdateUserTask task = new UpdateUserTask(this);
-		task.setNewPicture();
+		displayProgress();
+		UpdateUserTask task = new UpdateUserTask(this, this);
+		if (mImageUpdated) {
+			task.setNewPicture();
+			mImageUpdated = false;
+		}
 		task.execute();
+	}
+
+	private void displayProgress() {
+		if (mProgressFragment == null) {
+			mProgressFragment = ProgressFragment.newInstance(null);
+		}
+	    mProgressFragment.show(getSupportFragmentManager(), "dialog");
+	}
+
+	@Override
+	public void onUpdateFinish() {
+		destroyProgress();
+		displayAccountDetails();
+		setupEditMenuFields();
+	}
+
+	private void destroyProgress() {
+		mProgressFragment.dismiss();
 	}
 
 	protected boolean fieldIsEmpty(EditText editText) {
@@ -228,6 +258,7 @@ public class SlidingMenuActivity extends SlidingFragmentActivity implements
 			switch (imageId) {
 			case USER_ICON:
 				mBitmap = bitmap;
+				mImageUpdated = true;
 				displayUserIcon(bitmap);
 				break;
 			}

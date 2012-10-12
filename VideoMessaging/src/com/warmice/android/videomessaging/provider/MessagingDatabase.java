@@ -34,7 +34,7 @@ public class MessagingDatabase extends SQLiteOpenHelper {
 
 	private static final String DATABASE_NAME = "messages.db";
 
-	private static final int VERSION = 6;
+	private static final int VERSION = 7;
 
 	private static final int DATABASE_VERSION = VERSION;
 
@@ -68,6 +68,7 @@ public class MessagingDatabase extends SQLiteOpenHelper {
 				+ ContactColumns.CONTACT_APPROVAL_STATUS + " TEXT NOT NULL,"
 				+ ContactColumns.CONTACT_USERNAME + " TEXT NOT NULL,"
 				+ ContactColumns.CONTACT_NAME + " TEXT,"
+				+ ContactColumns.CONTACT_IMAGE_URL + " TEXT,"
 				+ ContactColumns.CONTACT_LAST_POST_DATE + " DATE," + "UNIQUE ("
 				+ ContactColumns.CONTACT_ID + ") ON CONFLICT REPLACE)");
 	}

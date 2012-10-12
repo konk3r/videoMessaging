@@ -20,6 +20,7 @@ import com.actionbarsherlock.view.Menu;
 import com.warmice.android.videomessaging.R;
 import com.warmice.android.videomessaging.data.Message;
 import com.warmice.android.videomessaging.data.CurrentUser;
+import com.warmice.android.videomessaging.file.image.ContactImage;
 import com.warmice.android.videomessaging.file.image.CurrentUserImage;
 import com.warmice.android.videomessaging.file.image.Image;
 import com.warmice.android.videomessaging.provider.MessagingContract.Contacts;
@@ -41,6 +42,7 @@ import android.widget.ListView;
 public class MessagesActivity extends SlidingMenuActivity implements
 		LoaderManager.LoaderCallbacks<Cursor> {
 	private final static int USER_THUMBNAIL = 1;
+	private final static int CONTACT_THUMBNAIL = 2;
 
 	public final static String EXTRA_CONTACT_ID = "extra_user_id";
 	public final static String EXTRA_USERNAME = "extra_user_name";
@@ -64,6 +66,10 @@ public class MessagesActivity extends SlidingMenuActivity implements
 		Image image = new CurrentUserImage(getApplicationContext());
 		image.setDimens(64, 64);
 		image.load(this, USER_THUMBNAIL);
+		
+		Image contactImage = new ContactImage(getApplicationContext(), mContactId);
+		contactImage.setDimens(64, 64);
+		contactImage.load(this, CONTACT_THUMBNAIL);
 	}
 
 	private void initializeViews() {
@@ -147,6 +153,9 @@ public class MessagesActivity extends SlidingMenuActivity implements
 			case USER_THUMBNAIL:
 				setUserThumbnail(bitmap);
 				break;
+			case CONTACT_THUMBNAIL:
+				setContactThumbnail(bitmap);
+				break;
 			default:
 				super.onImageLoaded(imageId, succeeded, bitmap);
 				break;
@@ -156,6 +165,11 @@ public class MessagesActivity extends SlidingMenuActivity implements
 
 	private void setUserThumbnail(Bitmap bitmap) {
 		mAdapter.setUserIcon(bitmap);
+		mList.invalidate();
+	}
+
+	private void setContactThumbnail(Bitmap bitmap) {
+		mAdapter.setContactIcon(bitmap);
 		mList.invalidate();
 	}
 }

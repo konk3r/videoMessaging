@@ -46,6 +46,7 @@ public class MessagingContract {
 		String CONTACT_ID = "contact_id";
 		String CONTACT_USERNAME = "contact_username";
 		String CONTACT_NAME = "contact_name";
+		String CONTACT_IMAGE_URL = "contact_image_url";
 		String CONTACT_APPROVAL_STATUS = "contact_approved";
 		String CONTACT_LAST_POST_DATE = "contact_last_post_date";
 	}

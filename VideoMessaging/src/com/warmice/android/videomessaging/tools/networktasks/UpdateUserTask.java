@@ -7,6 +7,7 @@ import ch.boye.httpclientandroidlib.entity.mime.content.StringBody;
 
 import com.warmice.android.videomessaging.BuildConfig;
 import com.warmice.android.videomessaging.R;
+import com.warmice.android.videomessaging.data.CurrentUser;
 import com.warmice.android.videomessaging.file.image.CurrentUserImage;
 
 import android.content.Context;
@@ -17,12 +18,14 @@ import com.warmice.android.videomessaging.tools.networktasks.RestService.*;
 public class UpdateUserTask extends RestTask {
 	private static final String TAG = "rest task";
 
-	Context mContext;
-	MultipartEntity mEntity;
-	boolean hasNewPicture;
+	private Context mContext;
+	private MultipartEntity mEntity;
+	private UserUpdateListener mListener;
+	private boolean hasNewPicture;
 
-	public UpdateUserTask(Context context) {
+	public UpdateUserTask(Context context, UserUpdateListener listener) {
 		super(context, HttpVerb.PUT);
+		mListener = listener;
 		mContext = context;
 		mEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
 		hasNewPicture = false;
@@ -85,6 +88,13 @@ public class UpdateUserTask extends RestTask {
 	@Override
 	protected void onPostExecute(RestResponse result) {
 		String json = result.getData();
+		CurrentUser user = CurrentUser.load(mContext);
+		user.storeUpdate(mContext, json);
+		mListener.onUpdateFinish();
+	}
+	
+	public interface UserUpdateListener{
+		public void onUpdateFinish();
 	}
 
 }

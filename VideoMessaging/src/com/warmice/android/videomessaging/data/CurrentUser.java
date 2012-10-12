@@ -1,5 +1,7 @@
 package com.warmice.android.videomessaging.data;
 
+import org.codehaus.jackson.map.ObjectMapper;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -25,7 +27,6 @@ public class CurrentUser extends User {
 	public String last_update;
 	public String first_name;
 	public String last_name;
-	public String image_url;
 
 	private String mPassword;
 
@@ -131,6 +132,32 @@ public class CurrentUser extends User {
 			image.delete();
 
 			return null;
+		}
+	}
+
+	public void storeUpdate(Context context, String json) {
+		try {
+			final ObjectMapper mapper = new ObjectMapper();
+			final CurrentUser updatedUser = mapper.readValue(json, CurrentUser.class);
+
+			image_url = updatedUser.image_url;
+			first_name = updatedUser.first_name;
+			last_name = updatedUser.last_name;
+			store(context);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	public static void storeNewUser(Context context, String json, String password) {
+		try {
+			final ObjectMapper mapper = new ObjectMapper();
+			final CurrentUser user = mapper.readValue(json, CurrentUser.class);
+			user.setPassword(password);
+			user.store(context);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 }
